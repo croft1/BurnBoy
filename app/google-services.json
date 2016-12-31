@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "470572295379",
+    "firebase_url": "https://burnboy-65386.firebaseio.com",
+    "project_id": "burnboy-65386",
+    "storage_bucket": "burnboy-65386.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470572295379:android:8af91a8c1c5ed42a",
+        "android_client_info": {
+          "package_name": "devicroft.burnboy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470572295379-3v5lqtm10fe79bgdv97grhqod82uh3jn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX8JG5r31iXeb5fzl5oM94MZ-5N03G-ag"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
