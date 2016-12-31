@@ -38,6 +38,12 @@
             android:name=".Activities.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".Activities.HistoryActivity"></activity>
+
+        <provider
+            android:name=".Data.MovementLogContentProvider"
+            android:authorities="devicroft.burnboy.Data.MovementLogContentProvider"
+            android:exported="true"
+            android:multiprocess="true" />
     </application>
 
 </manifest>

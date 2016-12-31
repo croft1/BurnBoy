@@ -43,25 +43,37 @@
         android:layout_alignParentEnd="true">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/add_activity"
+            android:id="@+id/fab_add_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
-            android:src="@drawable/fab_add"
+            android:src="@drawable/cast_ic_expanded_controller_stop"
             fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorAccent"
             fab:fab_colorRipple="@color/colorPrimaryDark"/>
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/start_activity"
+            android:id="@+id/fab_start_logging"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
             android:src="@drawable/icon_run"
+            fab:fab_colorNormal="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+            fab:fab_colorPressed="@color/cast_intro_overlay_button_background_color"
+            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_log_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@android:drawable/btn_star"
             fab:fab_colorNormal="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
             fab:fab_colorPressed="@color/cast_intro_overlay_button_background_color"
             fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"/>

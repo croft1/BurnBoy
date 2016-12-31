@@ -2,7 +2,7 @@ package devicroft.burnboy.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +16,9 @@ import android.view.View;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 import devicroft.burnboy.Data.LogDBHelper;
 import devicroft.burnboy.MovementLog;
 import devicroft.burnboy.R;
@@ -54,11 +52,16 @@ public class MainActivity extends AppCompatActivity {
                 Intent historyIntent = new Intent(MainActivity.this, HistoryActivity.class);
                 startActivity(historyIntent);
                 break;
+            case R.id.action_delete_all:
+                dispatchDeleteAllSnackbar();
+                break;
             default:
 
         }
         return false;
     }
+
+
 
     private void doLicenseDialog() {
         AlertDialog d = new AlertDialog.Builder(this)
@@ -94,20 +97,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFAB() {
         //https://github.com/Clans/FloatingActionButton
-        FloatingActionButton startButton = (FloatingActionButton) findViewById(R.id.start_activity);
-        FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.add_activity);
+        FloatingActionButton startButton = (FloatingActionButton) findViewById(R.id.fab_start_logging);
+        FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.fab_add_activity);
+        FloatingActionButton weightButton = (FloatingActionButton) findViewById(R.id.fab_log_weight);
 
         startButton.setOnClickListener(startLoggingFabClickListener);
         addButton.setOnClickListener(addLogFabClickListener);
+        weightButton.setOnClickListener(weightLogFabClickListener);
 
     }
 
     private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             startActivityLogging();
             //dispatchToast(R.string.start_fitnesslogging);
             dispatchToast(Integer.toString(dbHelper.getLogCount()));
+        }
+    };
+
+    private View.OnClickListener weightLogFabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //TODO initialise weight logging intent to activity
+            dispatchToast("implement weight log activity, with graph");
         }
     };
 
@@ -129,8 +143,42 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
     }
 
+    private void dispatchDeleteAllSnackbar() {
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.activity_main),  getString(R.string.delete_all_message), Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar sb = Snackbar.make( findViewById(R.id.activity_main), getString(R.string.delete_all_undo_message), Snackbar.LENGTH_SHORT);
+                        sb.show();
+                    }
+                });
+
+        //callback so i will actually delete the recipe when the snackbar is dismissed
+        snackbar.addCallback(new Snackbar.Callback(){
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                        /* //TODO update so we use content resolver instead
+                        ContentResolver cr = getContentResolver();
+                        cr.delete(
+                                ContentUris.withAppendedId(RecipeProviderContract.RECIPE_URI, RECIPE_INDEX),
+                                null,   //selection clause
+                                null    //selection args (after WHERE ...)
+                        );
+                        */
+                dbHelper.deleteAll();
+            }
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+                super.onShown(snackbar);
+            }
+        });
+        snackbar.show();
+    }
+
     private boolean startActivityLogging(){
-        //initialise class to start tracking
+        //TODO initialise tracking functionality
 
         return false;
     }

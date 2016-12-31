@@ -5,8 +5,10 @@
     <string name="action_maps_label">Map</string>
     <string name="action_licenses">Legal</string>
     <string name="action_history">History</string>
-    <string name="start_fitnesslogging">Activity Tracking Begun</string>
     <string name="action_delete_all">Delete All</string>
+    <string name="start_fitnesslogging">Activity Tracking Begun</string>
+    <string name="delete_all_message">Deleting all logs...</string>
+    <string name="delete_all_undo_message">All your logs are restored</string>
     <!-- END UI STRINGS -->
 
     <!-- PERMISSION STRINGS -->

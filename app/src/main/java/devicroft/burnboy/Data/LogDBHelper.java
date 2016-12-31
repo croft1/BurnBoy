@@ -25,23 +25,23 @@ public class LogDBHelper extends SQLiteOpenHelper {
 
     //to avoid confusion with actual android activities, MOVEMENT is used instead
 
-    private static final String DATABASE_NAME = "burnBoyDb";
-    private static final int dbVersionNumber = 1;
-    private static final String TABLENAME_MOVEMENT = "MOVEMENT";
-    private static final String TABLENAME_MARKER = "LATLNG";
+    public static final String DATABASE_NAME = "burnBoyDb";
+    public static final int dbVersionNumber = 1;
+    public static final String TABLENAME_MOVEMENT = "MOVEMENT";
+    public static final String TABLENAME_MARKER = "LATLNG";
 
     //MOVEMENT TABLE
-    private static final String COL_ID_MOVE = "id";
-    private static final String COL_STARTTIME = "start_date";
-    private static final String COL_ENDTIME = "end_date";
+    public static final String COL_ID_MOVE = "id";
+    public static final String COL_STARTTIME = "start_date";
+    public static final String COL_ENDTIME = "end_date";
     //LATLNG TABLE
-    private static final String COL_ID_MARKER = "id";
-    private static final String COL_TITLE = "title";
-    private static final String COL_SNIPPET = "snippet";
-    private static final String COL_LAT = "latitude";
-    private static final String COL_LNG = "longitude";
-    private static final String COL_TIME = "time";
-    private static final String COL_FK_MOVEMENT_ID = "fk_movement_id";
+    public static final String COL_ID_MARKER = "id";
+    public static final String COL_TITLE = "title";
+    public static final String COL_SNIPPET = "snippet";
+    public static final String COL_LAT = "latitude";
+    public static final String COL_LNG = "longitude";
+    public static final String COL_TIME = "time";
+    public static final String COL_FK_MOVEMENT_ID = "fk_movement_id";
 
     public static final String PRAGMA_FOREIGNKEYS_ON = "PRAGMA foreign_keys=ON";
     private static final String CREATE_MOVEMENT_LOG_TABLE =
