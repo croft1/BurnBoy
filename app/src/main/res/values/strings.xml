@@ -6,17 +6,20 @@
     <string name="action_licenses">Legal</string>
     <string name="action_history">History</string>
     <string name="start_fitnesslogging">Activity Tracking Begun</string>
-
+    <string name="action_delete_all">Delete All</string>
     <!-- END UI STRINGS -->
+
     <!-- PERMISSION STRINGS -->
     <string name="rationale_permission_internet">Need internet to find location, ads and access Google Maps</string>
     <string name="rationale_permission_coarse">Need to get approximate location and use Google Maps</string>
     <string name="rationale_permission_fine">Need internet to find accurate location and for Google Maps</string>
     <string name="permission_features_enabled">Features enabled</string>
     <!-- END  PERMISSION STRINGS -->
+
     <!-- LICENSE STRINGS -->
     <string name="license_fab">
         <![CDATA[
+        <p><b><i>[Expanding] Floating Action Button</i></p></b>
         <p><b>Copyright 2015 Dmytro Tarianyk</p></b>
 <p>
 Licensed under the Apache License, Version 2.0 (the "License");

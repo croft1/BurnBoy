@@ -2,6 +2,7 @@ package devicroft.burnboy.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,11 +21,14 @@ import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import devicroft.burnboy.Data.LogDBHelper;
+import devicroft.burnboy.MovementLog;
 import devicroft.burnboy.R;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    LogDBHelper dbHelper;
 
 
 
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         initialiseAd();
         setupFAB();
 
+        dbTest();
 
 
     }
@@ -101,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             startActivityLogging();
-            dispatchToast(R.string.start_fitnesslogging);
-
+            //dispatchToast(R.string.start_fitnesslogging);
+            dispatchToast(Integer.toString(dbHelper.getLogCount()));
         }
     };
 
@@ -110,11 +115,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             //TODO add activity for manually inputting point locations, time, medium (bike, run etc)
+            int count = dbHelper.getLogCount();
+            testAddLog();
+            dispatchToast(Integer.toString(dbHelper.getLogCount() - count)  + " added");
         }
     };
 
+
     private void dispatchToast(int stringID){
-        Toast.makeText(getApplicationContext(), getString(stringID), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(stringID), Toast.LENGTH_SHORT).show();
+    }
+    private void dispatchToast(String string){
+        Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
     }
 
     private boolean startActivityLogging(){
@@ -139,5 +151,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
+    /*
+    *       TEST METHOODSSS
+     */
+    private void dbTest(){
+        dbHelper = new LogDBHelper(this);
+        testAddLog();
+        dispatchToast(Integer.toString(dbHelper.getLogCount()));
+        dbHelper.deleteAll();   //TODO remove delete call
+
+    }
+
+    private void testAddLog(){
+        dbHelper.insertNewLog(new MovementLog(1000, 2000));
+        dbHelper.insertNewLog(new MovementLog());
+    }
 
     }
