@@ -27,11 +27,18 @@ public class MovementLogContentProvider extends ContentProvider {
     static{
         //declare URI that can be matched to the table we want
         uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT, MOV_ALL);
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT, MKR_ALL);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MARKER, MKR_ALL);
         //when we append a number ot the end of the base uri, we will be able to search for the individual recipe item
         uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT + "/#", MOV_FIND);
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT + "/#", MKR_FIND);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MARKER + "/#", MKR_FIND);
     }
+
+
+    /*
+
+                OVERRIDE METHODS
+
+     */
 
 
     @Override
@@ -117,14 +124,11 @@ public class MovementLogContentProvider extends ContentProvider {
         return 0;
     }
 
-    public int deleteAll(){
-        dbHelper.deleteAll();
-        return 0;
-    }
-
     @Override
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
         throw new UnsupportedOperationException("not implemented");
         //return 0;
     }
+
+    //END OVERRIDE
 }

@@ -10,7 +10,7 @@ public class MovementLogProviderContract {
 
     //outlining the parameters for what everything is worth and pointing to
     //reememember i need to put the name of the actual provider class here, not just the package name
-    public static final String AUTHORITY = "devicroft.rosettarecipes.RecipeProvider";
+    public static final String AUTHORITY = "devicroft.burnboy.MovementLogContentProvider";
 
     public static final Uri MOVEMENT_URI = Uri.parse("content://"+AUTHORITY+"/"+LogDBHelper.TABLENAME_MOVEMENT);
     public static final Uri MARKER_URI = Uri.parse("content://"+AUTHORITY+"/"+LogDBHelper.TABLENAME_MARKER);

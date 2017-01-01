@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import devicroft.burnboy.MovementLog;
+import devicroft.burnboy.MovementMarker;
 
 
 /**
@@ -28,7 +29,7 @@ public class LogDBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "burnBoyDb";
     public static final int dbVersionNumber = 1;
     public static final String TABLENAME_MOVEMENT = "MOVEMENT";
-    public static final String TABLENAME_MARKER = "LATLNG";
+    public static final String TABLENAME_MARKER = "MARKER";
 
     //MOVEMENT TABLE
     public static final String COL_ID_MOVE = "id";
@@ -50,6 +51,7 @@ public class LogDBHelper extends SQLiteOpenHelper {
                     COL_STARTTIME + " INTEGER, " +
                     COL_ENDTIME + " INTEGER" +
                     ");";
+
     private static final String CREATE_MARKER_TABLE =
             "CREATE TABLE " +  TABLENAME_MARKER + " ( " +
                     COL_ID_MARKER + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -59,7 +61,9 @@ public class LogDBHelper extends SQLiteOpenHelper {
                     COL_LNG + " DOUBLE NOT NULL, " +
                     COL_TIME + " INTEGER NOT NULL, " +
                     COL_FK_MOVEMENT_ID + " INTEGER NOT NULL, " +
-                    "FOREIGN KEY(" + COL_FK_MOVEMENT_ID + ") REFERENCES " + TABLENAME_MOVEMENT + "(" + COL_ID_MOVE + ")" +
+                        "FOREIGN KEY(" + COL_FK_MOVEMENT_ID +
+                        ") REFERENCES " + TABLENAME_MOVEMENT +
+                        "(" + COL_ID_MOVE + "ON DELETE CASCADE)" +
                     ");";
     private static final String QUERY_MARKERS_WHERE_ID =
             "SELECT * FROM " + TABLENAME_MARKER +
@@ -71,10 +75,10 @@ public class LogDBHelper extends SQLiteOpenHelper {
     private static final String QUERY_DELETE_ALL_LOGS =
             "DELETE FROM " + TABLENAME_MOVEMENT;
 
-    private static final String QUERY_SELECT_ALL_LOGS =
+    public static final String QUERY_SELECT_ALL_LOGS =
             "SELECT * FROM " + TABLENAME_MOVEMENT;
 
-    private static final String QUERY_SELECT_ALL_MARKERS =
+    public static final String QUERY_SELECT_ALL_MARKERS =
             "SELECT * FROM " + TABLENAME_MARKER;
 
     public LogDBHelper(Context context){
@@ -109,13 +113,13 @@ public class LogDBHelper extends SQLiteOpenHelper {
 
     }
 
-    private void insertMarkers(SQLiteDatabase db, ArrayList<Marker> m){
+    private void insertMarkers(SQLiteDatabase db, ArrayList<MovementMarker> m){
         for(int i = 0; i < m.size(); i++){
             ContentValues values = new ContentValues();
             values.put(COL_TITLE, m.get(i).getTitle());
             values.put(COL_SNIPPET, m.get(i).getSnippet());
-            values.put(COL_LAT, m.get(i).getPosition().latitude);
-            values.put(COL_LNG, m.get(i).getPosition().longitude);
+            values.put(COL_LAT, m.get(i).getLatlng().latitude);
+            values.put(COL_LNG, m.get(i).getLatlng().longitude);
             values.put(COL_TIME, 0);        //TODO implement time keeping functionality for each marker. perhaps putting date in tag
             db.insert(TABLENAME_MARKER, null, values);
         }
@@ -168,8 +172,12 @@ public class LogDBHelper extends SQLiteOpenHelper {
 
     }
 
-
-
+    public void delete(double startTime){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLENAME_MOVEMENT + " WHERE " + COL_STARTTIME + "= '" + startTime + "'" );
+        Log.d("dbh", "deleted " + startTime + " from db");
+        db.close();
+    }
 
     //END DB USAGE METHODS
 

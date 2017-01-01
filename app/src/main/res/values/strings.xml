@@ -9,6 +9,8 @@
     <string name="start_fitnesslogging">Activity Tracking Begun</string>
     <string name="delete_all_message">Deleting all logs...</string>
     <string name="delete_all_undo_message">All your logs are restored</string>
+    <string name="list_distance_label">Distance:</string>
+    <string name="list_duration_label">Duration:</string>
     <!-- END UI STRINGS -->
 
     <!-- PERMISSION STRINGS -->

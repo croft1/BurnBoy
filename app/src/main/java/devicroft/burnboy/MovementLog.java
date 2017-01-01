@@ -14,7 +14,7 @@ import java.util.Date;
 public class MovementLog {
 
     int _id;
-    ArrayList<Marker> markers = new ArrayList<>();
+    ArrayList<MovementMarker> markers = new ArrayList<>();
     ArrayList<Date> markerDate = new ArrayList<>();
     Date startTime;
     Date endTime;
@@ -47,11 +47,11 @@ public class MovementLog {
         this._id = _id;
     }
 
-    public ArrayList<Marker> getMarkers() {
+    public ArrayList<MovementMarker> getMarkers() {
         return markers;
     }
 
-    public void setMarkers(ArrayList<Marker> markers) {
+    public void setMarkers(ArrayList<MovementMarker> markers) {
         this.markers = markers;
     }
 

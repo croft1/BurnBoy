@@ -1,7 +1,11 @@
 package devicroft.burnboy.Activities;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +23,11 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import devicroft.burnboy.Data.DbQueries;
 import devicroft.burnboy.Data.LogDBHelper;
+import devicroft.burnboy.Data.MovementLogContentProvider;
+import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.MovementLog;
 import devicroft.burnboy.R;
 
@@ -90,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         initialiseAd();
         setupFAB();
 
+        dbHelper = new LogDBHelper(this);
+
         dbTest();
 
 
@@ -110,10 +120,9 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
             startActivityLogging();
             //dispatchToast(R.string.start_fitnesslogging);
-            dispatchToast(Integer.toString(dbHelper.getLogCount()));
+
         }
     };
 
@@ -129,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             //TODO add activity for manually inputting point locations, time, medium (bike, run etc)
-            int count = dbHelper.getLogCount();
-            testAddLog();
-            dispatchToast(Integer.toString(dbHelper.getLogCount() - count)  + " added");
+            int count = getLogCount();
+            testAddLog(new MovementLog());
+            dispatchToast(Integer.toString(getLogCount() - count)  + " added");
         }
     };
 
@@ -154,21 +163,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        //callback so i will actually delete the recipe when the snackbar is dismissed
+        //callback so i will actually delete when the snackbar is dismissed
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
-                        /* //TODO update so we use content resolver instead
-                        ContentResolver cr = getContentResolver();
-                        cr.delete(
-                                ContentUris.withAppendedId(RecipeProviderContract.RECIPE_URI, RECIPE_INDEX),
-                                null,   //selection clause
-                                null    //selection args (after WHERE ...)
-                        );
-                        */
+                //TODO deleteAllLogs();
                 dbHelper.deleteAll();
             }
-
             @Override
             public void onShown(Snackbar snackbar) {
                 super.onShown(snackbar);
@@ -200,22 +201,136 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /*
+            TEST METHODS
+     */
 
+    private void dbTest(){
+        MovementLog m = new MovementLog();
+        dbHelper.insertNewLog(m);
+        dbHelper.insertNewLog(new MovementLog());
+        dbHelper.insertNewLog(new MovementLog());
+
+        //testAddLog(new MovementLog());
+        dispatchToast("Log count: " + Integer.toString(getLogCount()) + "Marker count: " + Integer.toString(getMarkerCount()));
+        dbHelper.delete(m.getStartTime().getTime());
+        dispatchToast("Log count: " + Integer.toString(getLogCount()) + "Marker count: " + Integer.toString(getMarkerCount()));
+    }
+
+
+    //END TEST METHODS
 
     /*
-    *       TEST METHOODSSS
+    *       CONTENT PROVIDER METHODS METHOODSSS
      */
-    private void dbTest(){
-        dbHelper = new LogDBHelper(this);
-        testAddLog();
-        dispatchToast(Integer.toString(dbHelper.getLogCount()));
-        dbHelper.deleteAll();   //TODO remove delete call
+
+    private void testAddLog(MovementLog log){
+        //setup inserting putting in movement values
+        ContentResolver cr = this.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(MovementLogProviderContract.MOV_START_TIME, log.getStartTime().getTime());
+        values.put(MovementLogProviderContract.MOV_END_TIME, log.getEndTime().getTime());
+
+        Log.d("cr", log.getStartTime().getTime() + " log added");
+        cr.insert(MovementLogProviderContract.MOVEMENT_URI, values);
+        //setup and insert marker values - use same object but clear firrst
+        values.clear();
+        for (int i = 0; i < log.getMarkers().size(); i++) {
+            values.put(MovementLogProviderContract.MKR_LAT, log.getMarkers().get(i).getLatlng().latitude);
+            values.put(MovementLogProviderContract.MKR_LNG, log.getMarkers().get(i).getLatlng().longitude);
+            values.put(MovementLogProviderContract.MKR_SNIPPET, log.getMarkers().get(i).getSnippet());
+            values.put(MovementLogProviderContract.MKR_TITLE, log.getMarkers().get(i).getTitle());
+            values.put(MovementLogProviderContract.MKR_FK_MOVEMENT_ID, getIdOfLastInserted());
+            cr.insert(MovementLogProviderContract.MARKER_URI, values);
+        }
+    }
+
+    private int getIdOfLastInserted(){
+        Cursor c = getContentResolver().query(
+                MovementLogProviderContract.MOVEMENT_URI,  //content uri of table
+                new String[] {DbQueries.SELECT_MOST_RECENT_MOVEMENTLOG_ID},  //to return for each row
+                null,           //selection clause
+                null,           //selection args
+                null);          //sort order
+        //go to the entry with the count integer
+        c.moveToFirst();
+        //get the integer from the ID column
+        return c.getColumnIndex(LogDBHelper.COL_ID_MOVE);
+    }
+
+    private void deleteLog(int id){
+        //delete individual movement log
+        getContentResolver().delete(
+                ContentUris.withAppendedId(MovementLogProviderContract.MOVEMENT_URI, id),
+                null,   //selection clause
+                null    //selection args (after WHERE ...)
+        );
+    }
+
+    private void deleteAllLogs(){
+        getContentResolver().delete(
+                MovementLogProviderContract.MOVEMENT_URI,
+                null,   //selection clause
+                null    //selection args (after WHERE ...)
+        );
+    }
+
+    private int getLogCount(){
+        // for now it just displays the nubmer of rows in the db
+        //getting the count and returning a cursor with 1 entry that has the count integer
+        String[] ids = new String[]{
+                MovementLogProviderContract.MOV_ID
+        };
+        ContentResolver resolver = getContentResolver();
+        Cursor c = resolver.query(
+                MovementLogProviderContract.MOVEMENT_URI,  //content uri of table
+                ids,  //to return for each row
+                null,           //selection clause
+                null,           //selection args
+                null);          //sort order
+        return c.getCount();
+    }
+
+    private int getMarkerCount(){
+        // for now it just displays the nubmer of rows in the db
+        //getting the count and returning a cursor with 1 entry that has the count integer
+        Cursor c = getContentResolver().query(
+                MovementLogProviderContract.MARKER_URI,  //content uri of table
+                new String[] {"count(*) AS count"},  //to return for each row
+                null,           //selection clause
+                null,           //selection args
+                null);          //sort order
+        //go to the entry with the count integer
+        c.moveToFirst();
+        //display it
+        return c.getInt(0);
+    }
+
+
+    //END CONTENT PROVIDER METHODS
+
+    /*
+    *       dbhelper methods
+     */
+
+    private int helperMarkerCount(){
+        return dbHelper.getLogCount();
+    }
+
+    private void helperMarkerAdd(MovementLog m){
+        dbHelper.insertNewLog(m);
 
     }
 
-    private void testAddLog(){
-        dbHelper.insertNewLog(new MovementLog(1000, 2000));
-        dbHelper.insertNewLog(new MovementLog());
+    private void helperMarkerDelete(MovementLog m){
+        dbHelper.delete(m.getStartTime().getTime());
     }
+
+    private void helperMarkerDeleteAll(){
+        dbHelper.deleteAll();
+    }
+
+
+    //END DBHELPER METHODS
 
     }
