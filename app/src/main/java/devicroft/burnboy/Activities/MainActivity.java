@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO uncomment initialiseAd();
+
         setupFAB();
 
     }
@@ -265,7 +266,11 @@ public class MainActivity extends AppCompatActivity {
         summary.append(Integer.toString(c.getInt(0)));
 
         //do the same for marker table
-        c = getContentResolver().query(MovementLogProviderContract.MARKER_URI, new String[] {DbQueries.GET_TABLE_COUNT_AS_CURSORINT}, null, null, null);
+        c = getContentResolver().query(MovementLogProviderContract.MARKER_URI,
+                new String[] {DbQueries.GET_TABLE_COUNT_AS_CURSORINT},
+                null,
+                null,
+                null);
         c.moveToFirst();
         summary.append(" Marker count: ");
         summary.append(Integer.toString(c.getInt(0)));

@@ -23,6 +23,7 @@ public class MovementMarker {
     public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
 
 
+
     public MovementMarker(String title, String time, LatLng latlng, String snippet) {
         this.title = title;
         this.time = time;
@@ -35,6 +36,13 @@ public class MovementMarker {
         this.time = Calendar.getInstance().getTime().toString();
         this.latlng = new LatLng(-34, 151);
         this.snippet = "Sydney";
+    }
+
+    public MovementMarker(int i) {
+        this.title = "test";
+        this.time = Calendar.getInstance().getTime().toString();
+        this.latlng = new LatLng(-34, i);
+        this.snippet = "test";
     }
 
     public MarkerOptions getAsMarkerOptions(){
