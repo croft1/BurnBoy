@@ -49,13 +49,14 @@ public class HistoryActivity extends AppCompatActivity {
         ArrayList<MovementLog> logs = new ArrayList<>();
 
 
-
-        for (int i = 0; i < logs.size(); i++) {
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
             MovementLog m = new MovementLog(
             cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_START_TIME)),
             cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_END_TIME))
             );
             m.set_id(cursor.getInt(cursor.getColumnIndex(MovementLogProviderContract.MOV_ID)));
+            logs.add(m);
             logs.get(i).setMarkers(fetchMarkers(logs.get(i).get_id()));
 
         }
@@ -95,6 +96,7 @@ public class HistoryActivity extends AppCompatActivity {
         return markers;
     }
 
+    //TODO ON LIST ITEM CLICK LISTENER for MAP BUTTON
 
 
 }

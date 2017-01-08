@@ -1,7 +1,10 @@
 package devicroft.burnboy;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +57,9 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onGroupExpanded(int groupPosition) {
+
         super.onGroupExpanded(groupPosition);
+
     }
 
     @Override
@@ -105,9 +110,10 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView count = (TextView) view.findViewById(R.id.summary_number_label);
         TextView times = (TextView) view.findViewById(R.id.summary_startend_times_label);
-        count.setText(i);
         times.setText(logs.get(i).getFormattedStartDate() + " -> " +  logs.get(i).getFormattedEndDate());
+        count.setText(String.valueOf(i + 1));
 
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
         return view;
     }
 
@@ -115,28 +121,35 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(final int i, int i1, boolean b, View view, ViewGroup viewGroup) {
         if(view == null){
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_history_header, null);
+            view = inflater.inflate(R.layout.list_history_expanded, null);
         }
         TextView distance = (TextView) view.findViewById(R.id.expanded_distance_label);
         TextView duration = (TextView) view.findViewById(R.id.expanded_duration_label);
-        distance.setText(String.valueOf(logs.get(i).getTotalDistanceMoved()));
-        duration.setText(logs.get(i).getDisplayTotalDuration());
+        distance.setText("Distance: " + String.valueOf(logs.get(i).getTotalDistanceMoved()));
+        duration.setText("Duration: " + logs.get(i).getDisplayTotalDuration());
         //need to have for list
         Button mapButton = (Button) view.findViewById(R.id.expanded_map_button);
         mapButton.setFocusable(false);
         mapButton.setClickable(false);
-
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, MapsActivity.class);
-                intent.putParcelableArrayListExtra("markers", logs.get(i).getAllMarkerLatLng());
-                
+                Intent mapIntent = new Intent(context, MapsActivity.class);
+                mapIntent.putParcelableArrayListExtra("markers", logs.get(i).getAllMarkerLatLng());
+                mapIntent.putExtra("start", logs.get(i).getStartTime().getTime());
+                mapIntent.putExtra("end", logs.get(i).getEndTime().getTime());
+                mapIntent.putExtra("source", "history");
+                context.startActivity(mapIntent);   //https://stackoverflow.com/questions/20235650/start-activity-when-custom-listview-button-clicked
+
+                Activity a = (Activity) context;    //https://stackoverflow.com/questions/30931866/overridependingtransition-not-work-in-adapterandroid
+                a.overridePendingTransition(0, 0);
             }
         });
 
         return view;
     }
+
+
 
     @Override
     public boolean isChildSelectable(int i, int i1) {

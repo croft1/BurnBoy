@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_map:
                 //start map view activity
                 Intent mapIntent = new Intent(MainActivity.this, MapsActivity.class);
+                mapIntent.putExtra("source", "browse");
                 startActivity(mapIntent);
                 break;
             case R.id.action_licenses:

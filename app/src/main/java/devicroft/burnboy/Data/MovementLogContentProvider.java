@@ -28,11 +28,11 @@ public class MovementLogContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static{
         //declare URI that can be matched to the table we want
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MOVEMENT, MOV_ALL);
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MARKER, MKR_ALL);
-        //when we append a number ot the end of the base uri, we will be able to search for the individual recipe item
         uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MOVEMENT + "/#", MOV_FIND);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MOVEMENT, MOV_ALL);
+        //when we append a number ot the end of the base uri, we will be able to search for the individual recipe item
         uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MARKER + "/#", MKR_FIND);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MARKER, MKR_ALL);
     }
 
 
@@ -55,7 +55,7 @@ public class MovementLogContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d("Provider", uri.toString() + " " + uriMatcher.match(uri));
+        Log.d("CP", uri.toString() + " " + uriMatcher.match(uri));
         //get db to query
         SQLiteDatabase db  = dbHelper.getWritableDatabase();
 

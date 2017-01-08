@@ -29,8 +29,8 @@ public class MovementLog {
 
 
 
-    SimpleDateFormat displayDateFormat = new SimpleDateFormat("HH:mm:ss aaa -> HH:mm:ss aaa - EEE, d MMM, yyyy");
-    SimpleDateFormat totalDurationFormat = new SimpleDateFormat("HH:mm:ss aaa -> HH:mm:ss aaa - EEE, d MMM, yyyy");
+    SimpleDateFormat displayDateFormat = new SimpleDateFormat("HH:mm:ss aaa - EEE, d MMM, yyyy");
+    SimpleDateFormat totalDurationFormat = new SimpleDateFormat("HH:mm:ss");
 
     public MovementLog() {
         //starting a new log fresh

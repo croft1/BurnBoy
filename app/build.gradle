@@ -36,6 +36,8 @@ dependencies {
 
     //custom expandable fab
     compile 'com.github.clans:fab:1.6.4'
+    //MPAndroidChart for graphs and charts ----  https://github.com/PhilJay/MPAndroidChart
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 }
 
 

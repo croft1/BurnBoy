@@ -20,7 +20,7 @@ public class MovementMarker {
     private String time;
     private LatLng latlng;
     private String snippet;
-    public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
+    public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MARKER+"/";
 
 
 
