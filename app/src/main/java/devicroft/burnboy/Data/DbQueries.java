@@ -6,5 +6,8 @@ package devicroft.burnboy.Data;
 
 public class DbQueries {
     //
-    public static final String SELECT_MOST_RECENT_MOVEMENTLOG_ID = "SELECT " + LogDBHelper.COL_ID_MOVE + " from " + LogDBHelper.TABLENAME_MOVEMENT + " order by " + LogDBHelper.COL_ID_MOVE + " DESC limit 1";
+    public static final String SELECT_MOST_RECENT_MOVEMENTLOG_ID = DbHelper.COL_ID_MOVE + " from " + DbHelper.TABLENAME_MOVEMENT;
+    public static final String GET_TABLE_COUNT_AS_CURSORINT = "count(*) AS count";
+    public static final String ID_EQUALS_PLACEHOLDER = "id = ?";
+    public static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys = ON;";
 }

@@ -8,21 +8,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import devicroft.burnboy.MovementLog;
-import devicroft.burnboy.MovementMarker;
+import devicroft.burnboy.Models.MovementLog;
+import devicroft.burnboy.Models.MovementMarker;
 
 
 /**
  * Created by m on 31-Dec-16.
  */
 
-public class LogDBHelper extends SQLiteOpenHelper {
+public class DbHelper extends SQLiteOpenHelper {
 
     //to avoid confusion with actual android activities, MOVEMENT is used instead
 
@@ -53,7 +51,7 @@ public class LogDBHelper extends SQLiteOpenHelper {
                     ");";
 
     private static final String CREATE_MARKER_TABLE =
-            "CREATE TABLE " +  TABLENAME_MARKER + " ( " +
+            "CREATE TABLE " +  TABLENAME_MARKER + " (" +
                     COL_ID_MARKER + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     COL_TITLE + " TEXT NOT NULL, " +
                     COL_SNIPPET + " TEXT NOT NULL, " +
@@ -63,7 +61,7 @@ public class LogDBHelper extends SQLiteOpenHelper {
                     COL_FK_MOVEMENT_ID + " INTEGER NOT NULL, " +
                         "FOREIGN KEY(" + COL_FK_MOVEMENT_ID +
                         ") REFERENCES " + TABLENAME_MOVEMENT +
-                        "(" + COL_ID_MOVE + "ON DELETE CASCADE)" +
+                        "(" + COL_ID_MOVE + ")" + " ON DELETE CASCADE" +
                     ");";
     private static final String QUERY_MARKERS_WHERE_ID =
             "SELECT * FROM " + TABLENAME_MARKER +
@@ -81,15 +79,15 @@ public class LogDBHelper extends SQLiteOpenHelper {
     public static final String QUERY_SELECT_ALL_MARKERS =
             "SELECT * FROM " + TABLENAME_MARKER;
 
-    public LogDBHelper(Context context){
+    public DbHelper(Context context){
         super(context, DATABASE_NAME, null, dbVersionNumber);
         Log.d("db",  "db created");
     }
 
-    public LogDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
-    public LogDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
+    public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
     }
 
@@ -156,12 +154,6 @@ public class LogDBHelper extends SQLiteOpenHelper {
             return s;
     }
 
-    public void deleteAll(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(QUERY_DELETE_ALL_LOGS);
-        db.execSQL(QUERY_DELETE_ALL_MARKERS);
-        db.close();
-    }
 
     public int getLogCount(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -171,14 +163,23 @@ public class LogDBHelper extends SQLiteOpenHelper {
         return count;
 
     }
-
-    public void delete(double startTime){
+    //called inside content provider when uri matches
+    /*
+    public void delete(int startTime){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLENAME_MOVEMENT + " WHERE " + COL_STARTTIME + "= '" + startTime + "'" );
-        Log.d("dbh", "deleted " + startTime + " from db");
+        db.execSQL("DELETE FROM " + TABLENAME_MOVEMENT + " WHERE " + COL_START_TIME + "= '" + startTime + "'" );
+        Log.d("dbh", "deleted " + id + " from db");
         db.close();
     }
 
+    public void deleteAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(QUERY_DELETE_ALL_LOGS);
+        db.execSQL(QUERY_DELETE_ALL_MARKERS);
+        db.close();
+    }
+
+    */
     //END DB USAGE METHODS
 
      /*
@@ -205,6 +206,7 @@ public class LogDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d("db", "TABLE UPGRADED");
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_MARKER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_MOVEMENT);

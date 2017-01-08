@@ -52,8 +52,9 @@ public class StartActivity extends AppCompatActivity {
 
             }
         });
-
         logoSplash.startAnimation(anim);
+
+
     }
 
     //future add an int array as a parameter to pass in multiple permissions at the same time

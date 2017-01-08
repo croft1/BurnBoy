@@ -5,7 +5,9 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -21,16 +23,16 @@ public class MovementLogContentProvider extends ContentProvider {
     private static final int MKR_ALL = 333;
     private static final int MKR_FIND = 444;
 
-    private LogDBHelper dbHelper = null;
+    private DbHelper dbHelper = null;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static{
         //declare URI that can be matched to the table we want
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT, MOV_ALL);
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MARKER, MKR_ALL);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MOVEMENT, MOV_ALL);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MARKER, MKR_ALL);
         //when we append a number ot the end of the base uri, we will be able to search for the individual recipe item
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MOVEMENT + "/#", MOV_FIND);
-        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, LogDBHelper.TABLENAME_MARKER + "/#", MKR_FIND);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MOVEMENT + "/#", MOV_FIND);
+        uriMatcher.addURI(MovementLogProviderContract.AUTHORITY, DbHelper.TABLENAME_MARKER + "/#", MKR_FIND);
     }
 
 
@@ -41,12 +43,14 @@ public class MovementLogContentProvider extends ContentProvider {
      */
 
 
+    //create reference to dbhelper instance
     @Override
     public boolean onCreate() {
         Log.d("Provider", "Created");
-        this.dbHelper =  new LogDBHelper(this.getContext());
+        this.dbHelper =  new DbHelper(this.getContext());
         return false;
     }
+
 
     @Nullable
     @Override
@@ -59,14 +63,14 @@ public class MovementLogContentProvider extends ContentProvider {
         switch(uriMatcher.match(uri)) {
             case MKR_FIND:
                 //update marker selection to the narrowed scope we wanted of an individual
-                selection = LogDBHelper.COL_ID_MARKER + " = " + uri.getLastPathSegment();
+                selection = DbHelper.COL_ID_MARKER + " = " + uri.getLastPathSegment();
             case MKR_ALL:
                 //return the cursor that points to what we want, note 'selection' is potentially modified from * to 1
                 return db.query(dbHelper.TABLENAME_MARKER, projection, selection, selectionArgs, null, null, sortOrder);
 
             //REMEMBER, MUST BE IN THIS ORDER - FIND, then moves on to all after seleciton has been refined from the fine statement, then returns.
             case MOV_FIND:
-                selection = LogDBHelper.COL_ID_MOVE + " = " + uri.getLastPathSegment();
+                selection = DbHelper.COL_ID_MOVE + " = " + uri.getLastPathSegment();
             case MOV_ALL:
                 return db.query(dbHelper.TABLENAME_MOVEMENT, projection, selection, selectionArgs, null, null, sortOrder);
             default:
@@ -96,11 +100,11 @@ public class MovementLogContentProvider extends ContentProvider {
         switch(uriMatcher.match(uri)){
             case 111:
             case 222:
-                tableName = LogDBHelper.TABLENAME_MOVEMENT;
+                tableName = DbHelper.TABLENAME_MOVEMENT;
                 break;
             case 333:
             case 444:
-                tableName = LogDBHelper.TABLENAME_MARKER;
+                tableName = DbHelper.TABLENAME_MARKER;
                 break;
             default:
                 Log.e("provider", "NO URIMATCH WHEN INSERTING, REEVALUATE LIFE");
@@ -118,16 +122,50 @@ public class MovementLogContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
-        Log.d("provider", "deleting" + uri.toString());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(uri.toString(), where, whereArgs);
-        return 0;
+        //db.beginTransaction();
+
+        db.execSQL("PRAGMA foreign_keys = ON;");    //need this every time we open a db to allow for features like cascade to work
+
+        int count = 0;
+
+        Log.d("db", "deleting from" + uri + where);
+        try{
+            count = db.delete(DbHelper.TABLENAME_MOVEMENT, where, whereArgs);
+        }catch(SQLiteException e){
+            Log.e("db", "deletion error");
+            e.printStackTrace();
+        }catch(CursorIndexOutOfBoundsException exception){
+            Log.e("db", "No more to delete");
+            return -1;
+        }
+       // db.endTransaction();
+        db.close();
+
+        return count;
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        throw new UnsupportedOperationException("not implemented");
-        //return 0;
+    public int update(Uri uri, ContentValues contentValues, String where, String[] whereArgs) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //db.beginTransaction();
+
+        db.execSQL("PRAGMA foreign_keys = ON;");    //need this every time we open a db to allow for features like cascade to work, just in case
+
+        int updateCount = 0;
+
+        Log.d("db", "updating " + uri + where);
+        updateCount = db.update(DbHelper.TABLENAME_MOVEMENT, contentValues, where, whereArgs);
+        try{
+            db.update(DbHelper.TABLENAME_MARKER, contentValues, where, whereArgs);
+        }catch(SQLiteException e){
+            Log.e("db", "update error");
+            e.printStackTrace();
+        }
+        // db.endTransaction();
+        db.close();
+
+        return updateCount;
     }
 
     //END OVERRIDE

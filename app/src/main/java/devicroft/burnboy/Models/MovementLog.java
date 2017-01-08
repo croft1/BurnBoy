@@ -1,11 +1,12 @@
-package devicroft.burnboy;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
+package devicroft.burnboy.Models;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import devicroft.burnboy.Data.DbHelper;
+
+import static devicroft.burnboy.Data.MovementLogProviderContract.AUTHORITY;
 
 /**
  * Created by m on 31-Dec-16.
@@ -18,11 +19,17 @@ public class MovementLog {
     ArrayList<Date> markerDate = new ArrayList<>();
     Date startTime;
     Date endTime;
+    public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
 
     public MovementLog() {
         //starting a new log fresh
         startTime = Calendar.getInstance().getTime();
         endTime = new Date(startTime.getTime() + 600000);   //default is 1 hour end time
+        markers.add(new MovementMarker());
+        markers.add(new MovementMarker());
+        markers.add(new MovementMarker());
+        markers.add(new MovementMarker());
+        markers.add(new MovementMarker());
     }
 
     public MovementLog(long start, long end) {

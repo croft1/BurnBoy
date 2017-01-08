@@ -1,7 +1,13 @@
-package devicroft.burnboy;
+package devicroft.burnboy.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Calendar;
+
+import devicroft.burnboy.Data.DbHelper;
+
+import static devicroft.burnboy.Data.MovementLogProviderContract.AUTHORITY;
 
 /**
  * Created by m on 01-Jan-17.
@@ -14,6 +20,7 @@ public class MovementMarker {
     private String time;
     private LatLng latlng;
     private String snippet;
+    public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
 
 
     public MovementMarker(String title, String time, LatLng latlng, String snippet) {
@@ -25,9 +32,9 @@ public class MovementMarker {
 
     public MovementMarker() {
         this.title = "test";
-        this.time = "testTime";
+        this.time = Calendar.getInstance().getTime().toString();
         this.latlng = new LatLng(-34, 151);
-        this.snippet = "Australia";
+        this.snippet = "Sydney";
     }
 
     public MarkerOptions getAsMarkerOptions(){
