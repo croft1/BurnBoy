@@ -3,6 +3,7 @@ package devicroft.burnboy.Activities;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,11 +25,12 @@ import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
+    private static final String LOG_TAG = "MAPS LOG";
     private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -44,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(LOG_TAG,"onMapReady");
         mMap = googleMap;
 
         //if intent is of a particula
@@ -71,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void testSetupMap(){
+        Log.d(LOG_TAG,"testsetupmap");
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -79,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private void setupLogStartPointMap() {
+        Log.d(LOG_TAG,"setupStartPOintMap");
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_simple));
         ArrayList<LatLng> startPoints = new ArrayList<>();
 
@@ -113,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setupNextButton() {
+        Log.d(LOG_TAG,"setupNextButton");
         //TODO create fab for this
 
     }
@@ -121,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View view) {
             //TODO move from current marker focus, to next marker focus
+            Log.d(LOG_TAG,"nextButtonClickListener");
             LatLng nextMarker = new LatLng(32,-151);
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(nextMarker, 12));
@@ -128,6 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     private void setupIndividualLogMap() {
+        Log.d(LOG_TAG,"setupIndivLogMap");
         //TODO fix npe, geos is empty
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_simple));
         ArrayList<LatLng> geos = getIntent().getParcelableArrayListExtra("markers");

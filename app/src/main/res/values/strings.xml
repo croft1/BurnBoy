@@ -10,11 +10,16 @@
     <string name="delete_all_propose">Confirm you REALLY want to delete all logs</string>
     <string name="delete_all_confirm">Deleting all logs...</string>
     <string name="delete_all_undo">All your logs are restored</string>
-    <string name="delete_message">Deleting log</string>
+    <string name="delete_message">All logs deleted</string>
     <string name="delete_undo_message">Restored log</string>
     <string name="delete_fail_message">Unable to delete anything</string>
     <string name="list_distance_label">Distance:</string>
     <string name="list_duration_label">Duration:</string>
+    <string name="fab_start_logging">Start logging</string>
+    <string name="fab_submit_weight">Log weight</string>
+    <string name="fab_manual_log_entry">Manually add log</string>
+    <string name="notif_logging_movement">Activity tracking started</string>
+    <string name="notif_logging_text">Press to stop tracking and return</string>
     <!-- END UI STRINGS -->
 
     <!-- PERMISSION STRINGS -->
@@ -25,7 +30,6 @@
     <!-- END  PERMISSION STRINGS -->
 
     <!-- DATE FORMAT STRINGS -->
-
     <string name="date_display_long">HH:mm:ss aaa - EEE, d MMM, yyyy</string>
     <string name="date_display_HMS">HH:mm:ss aaa - EEE, d MMM, yyyy</string>
     <string name="date_display_simple">HH:mm:ss - EEE, d MMM, yy</string>
@@ -71,9 +75,13 @@ limitations under the License.</p>
         ]]>
     </string>
 
-
     <!-- END LICENSE STRINGS -->
 
+    <!-- MANIFEST STRINGS -->
+    <string name="service_movement_tracking_description">A service that is used to track location when user starts logging activity</string>
+    <string name="service_movement_tracking_name">Fitness tracker service</string>
+    <string name="service_movement_tracking_label">Movement Log</string>
+    <!-- END MANIFEST STRINGS -->
 
     <!-- ADS -->
     <string name="main_activity_banner_ad_unit_id">ca-app-pub-1105785661696607/4702127979</string>

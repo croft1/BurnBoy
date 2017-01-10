@@ -23,12 +23,13 @@ import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
 
 public class HistoryActivity extends AppCompatActivity {
-
+    private static final String LOG_TAG = "HISTORY LOG";
     ExpandableListView list;
     HistoryExpandableListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
@@ -44,6 +45,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private ArrayList<MovementLog> fetchLogs() {
+        Log.d(LOG_TAG,"fetchLogs");
         Cursor cursor = getContentResolver().query(MovementLogProviderContract.MOVEMENT_URI, null, null, null, null);
 
         ArrayList<MovementLog> logs = new ArrayList<>();
@@ -66,11 +68,13 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d(LOG_TAG,"onBackPressed");
         super.onBackPressed();
         overridePendingTransition(0,0);
     }
 
     private ArrayList<MovementMarker> fetchMarkers(int id){
+        Log.d(LOG_TAG,"fetchMarkers");
         ArrayList<MovementMarker> markers = new ArrayList<>();
 
         //So on the MARKER TABLE
@@ -102,7 +106,6 @@ public class HistoryActivity extends AppCompatActivity {
         return markers;
     }
 
-    //TODO ON LIST ITEM CLICK LISTENER for MAP BUTTON
 
 
 }

@@ -52,7 +52,9 @@
             android:src="@drawable/cast_ic_expanded_controller_stop"
             fab:fab_colorNormal="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
             fab:fab_colorPressed="@color/cast_intro_overlay_button_background_color"
-            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"/>
+            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"
+
+            app:fab_label="@string/fab_manual_log_entry" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_start_logging"
@@ -64,7 +66,8 @@
             android:src="@drawable/icon_run"
             fab:fab_colorNormal="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
             fab:fab_colorPressed="@color/cast_intro_overlay_button_background_color"
-            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"/>
+            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"
+            app:fab_label="@string/fab_start_logging" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_log_weight"
@@ -73,10 +76,11 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
-            android:src="@android:drawable/btn_star"
+            android:src="@drawable/icon_scales"
             fab:fab_colorNormal="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
             fab:fab_colorPressed="@color/cast_intro_overlay_button_background_color"
-            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"/>
+            fab:fab_colorRipple="@color/cast_expanded_controller_ad_label_background_color"
+            app:fab_label="@string/fab_submit_weight" />
 
     </com.github.clans.fab.FloatingActionMenu>
 

@@ -6,7 +6,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
@@ -47,79 +47,50 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="HistoryActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/HistoryActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="80" selection-start-line="9" selection-start-column="80" selection-end-line="9" selection-end-column="80" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
+            <state relative-caret-position="250">
+              <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
               <folding>
-                <element signature="e#2641#2674#0" expanded="true" />
-                <element signature="e#2704#2742#0" expanded="true" />
-                <element signature="e#2800#3024#0" expanded="true" />
-                <element signature="e#3023#3024#0" expanded="true" />
-                <element signature="e#3083#3292#0" expanded="true" />
-                <element signature="e#3291#3292#0" expanded="true" />
-                <element signature="e#3529#3560#0" expanded="true" />
-                <element signature="e#3633#3675#0" expanded="true" />
-                <element signature="e#7214#7248#0" expanded="true" />
-                <element signature="e#8239#8240#0" expanded="true" />
-                <element signature="e#8286#8287#0" expanded="true" />
+                <element signature="e#6564#7261#0" expanded="true" />
+                <element signature="e#7102#7131#0" expanded="true" />
+                <element signature="e#7260#7261#0" expanded="true" />
                 <element signature="method#initialiseAd#0;class#MainActivity#0" expanded="false" />
-                <marker date="1484067351114" expanded="false" signature="7587:7630" ph="&quot;All your logs are restored&quot;" />
-                <marker date="1484067351114" expanded="false" signature="15826:15836" ph=" { " />
-                <marker date="1484067351114" expanded="false" signature="15866:15872" ph=" }" />
-                <marker date="1484067351114" expanded="false" signature="16015:16025" ph=" { " />
-                <marker date="1484067351114" expanded="false" signature="16069:16075" ph=" }" />
-                <marker date="1484067351114" expanded="false" signature="16117:16127" ph=" { " />
-                <marker date="1484067351114" expanded="false" signature="16148:16154" ph=" }" />
+                <element signature="e#17213#17262#0" expanded="true" />
+                <element signature="e#17452#17499#0" expanded="true" />
+                <element signature="e#17685#17730#0" expanded="true" />
+                <element signature="e#17931#17980#0" expanded="true" />
+                <element signature="e#19393#19440#0" expanded="true" />
+                <element signature="e#19833#19880#0" expanded="true" />
+                <element signature="e#20270#20317#0" expanded="true" />
+                <marker date="1484084991449" expanded="false" signature="8670:8713" ph="&quot;All your logs are restored&quot;" />
+                <marker date="1484084991449" expanded="false" signature="21369:21379" ph=" { " />
+                <marker date="1484084991449" expanded="false" signature="21409:21415" ph=" }" />
+                <marker date="1484084991449" expanded="false" signature="21558:21568" ph=" { " />
+                <marker date="1484084991449" expanded="false" signature="21612:21618" ph=" }" />
+                <marker date="1484084991449" expanded="false" signature="21660:21670" ph=" { " />
+                <marker date="1484084991449" expanded="false" signature="21691:21697" ph=" }" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HistoryExpandableListAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/HistoryExpandableListAdapter.java">
+      <file leaf-file-name="MovementTrackingService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Service/MovementTrackingService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+            <state relative-caret-position="121">
+              <caret line="119" column="64" selection-start-line="119" selection-start-column="64" selection-end-line="119" selection-end-column="64" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#4002#4505#0" expanded="true" />
-                <element signature="e#4504#4505#0" expanded="true" />
+                <element signature="e#1436#1437#0" expanded="true" />
+                <element signature="e#1484#1485#0" expanded="true" />
+                <element signature="e#4050#4092#0" expanded="true" />
+                <element signature="e#4126#4164#0" expanded="true" />
+                <element signature="e#5036#5037#0" expanded="true" />
+                <element signature="e#5081#5082#0" expanded="true" />
+                <element signature="e#5138#5139#0" expanded="true" />
+                <element signature="e#5176#5177#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="menu.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu.xml">
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -2422,9 +2393,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/MovementMarker.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Data/LogDBHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Data/LogDBQueries.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Data/DbQueries.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/anim/scale.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/list_history_header.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Data/MovementLogContentProvider.java" />
@@ -2432,14 +2401,17 @@
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Models/MovementMarker.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/HistoryActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Models/MovementLog.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MapsActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/StartActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/HistoryExpandableListAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/HistoryActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MapsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/menu.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/StartActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Service/MovementTrackingService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -2484,10 +2456,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="BurnBoy" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Gradle Scripts" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -2536,7 +2504,7 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="menu" />
+              <option name="myItemId" value="anim" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2576,6 +2544,28 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="Service" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BurnBoy" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="burnboy" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="Activities" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -2588,6 +2578,10 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="manifests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -2946,16 +2940,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="54" y="-8" width="1320" height="784" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4025559" sideWeight="0.40396824" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="false" show_stripe_button="true" weight="0.12619808" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" x="661" y="302" width="168" height="118" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="true" show_stripe_button="true" weight="1.0" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" x="415" y="225" width="703" height="492" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21746032" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4025559" sideWeight="0.5960317" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2965,7 +2959,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36741215" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.51757187" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
@@ -3049,25 +3043,24 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2641#2674#0" expanded="true" />
-            <element signature="e#2704#2742#0" expanded="true" />
-            <element signature="e#2800#3024#0" expanded="true" />
-            <element signature="e#3023#3024#0" expanded="true" />
-            <element signature="e#3083#3292#0" expanded="true" />
-            <element signature="e#3291#3292#0" expanded="true" />
-            <element signature="e#3529#3560#0" expanded="true" />
-            <element signature="e#3633#3675#0" expanded="true" />
-            <element signature="e#7214#7248#0" expanded="true" />
-            <element signature="e#8239#8240#0" expanded="true" />
-            <element signature="e#8286#8287#0" expanded="true" />
+            <element signature="e#6564#7261#0" expanded="true" />
+            <element signature="e#7102#7131#0" expanded="true" />
+            <element signature="e#7260#7261#0" expanded="true" />
             <element signature="method#initialiseAd#0;class#MainActivity#0" expanded="false" />
-            <marker date="1484067351114" expanded="false" signature="7587:7630" ph="&quot;All your logs are restored&quot;" />
-            <marker date="1484067351114" expanded="false" signature="15826:15836" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="15866:15872" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16015:16025" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16069:16075" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16117:16127" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16148:16154" ph=" }" />
+            <element signature="e#17213#17262#0" expanded="true" />
+            <element signature="e#17452#17499#0" expanded="true" />
+            <element signature="e#17685#17730#0" expanded="true" />
+            <element signature="e#17931#17980#0" expanded="true" />
+            <element signature="e#19393#19440#0" expanded="true" />
+            <element signature="e#19833#19880#0" expanded="true" />
+            <element signature="e#20270#20317#0" expanded="true" />
+            <marker date="1484084991449" expanded="false" signature="8670:8713" ph="&quot;All your logs are restored&quot;" />
+            <marker date="1484084991449" expanded="false" signature="21369:21379" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21409:21415" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21558:21568" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21612:21618" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21660:21670" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21691:21697" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -3088,25 +3081,24 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2641#2674#0" expanded="true" />
-            <element signature="e#2704#2742#0" expanded="true" />
-            <element signature="e#2800#3024#0" expanded="true" />
-            <element signature="e#3023#3024#0" expanded="true" />
-            <element signature="e#3083#3292#0" expanded="true" />
-            <element signature="e#3291#3292#0" expanded="true" />
-            <element signature="e#3529#3560#0" expanded="true" />
-            <element signature="e#3633#3675#0" expanded="true" />
-            <element signature="e#7214#7248#0" expanded="true" />
-            <element signature="e#8239#8240#0" expanded="true" />
-            <element signature="e#8286#8287#0" expanded="true" />
+            <element signature="e#6564#7261#0" expanded="true" />
+            <element signature="e#7102#7131#0" expanded="true" />
+            <element signature="e#7260#7261#0" expanded="true" />
             <element signature="method#initialiseAd#0;class#MainActivity#0" expanded="false" />
-            <marker date="1484067351114" expanded="false" signature="7587:7630" ph="&quot;All your logs are restored&quot;" />
-            <marker date="1484067351114" expanded="false" signature="15826:15836" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="15866:15872" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16015:16025" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16069:16075" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16117:16127" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16148:16154" ph=" }" />
+            <element signature="e#17213#17262#0" expanded="true" />
+            <element signature="e#17452#17499#0" expanded="true" />
+            <element signature="e#17685#17730#0" expanded="true" />
+            <element signature="e#17931#17980#0" expanded="true" />
+            <element signature="e#19393#19440#0" expanded="true" />
+            <element signature="e#19833#19880#0" expanded="true" />
+            <element signature="e#20270#20317#0" expanded="true" />
+            <marker date="1484084991449" expanded="false" signature="8670:8713" ph="&quot;All your logs are restored&quot;" />
+            <marker date="1484084991449" expanded="false" signature="21369:21379" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21409:21415" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21558:21568" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21612:21618" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21660:21670" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21691:21697" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -3138,13 +3130,6 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/main_menu.xml" />
     <entry file="file://$PROJECT_DIR$/app/build/intermediates/res/merged/debug/menu/primary_menu.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/primary_menu.xml" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/MovementTrackingService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/icon.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -3188,50 +3173,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="45" selection-start-line="5" selection-start-column="45" selection-end-line="5" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/platforms/android-25/android.jar!/android/content/ContentResolver.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="131">
           <caret line="140" column="21" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="28" column="67" selection-start-line="28" selection-start-column="67" selection-end-line="28" selection-end-column="67" />
-          <folding>
-            <element signature="e#922#947#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/anim/scale.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="57" column="47" selection-start-line="57" selection-start-column="47" selection-end-line="57" selection-end-column="47" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3357,14 +3302,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MapsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="89" column="21" selection-start-line="89" selection-start-column="21" selection-end-line="89" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Data/MovementLogProviderContract.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="139">
@@ -3379,60 +3316,6 @@
           <caret line="34" column="76" selection-start-line="34" selection-start-column="76" selection-end-line="34" selection-end-column="76" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="80" selection-start-line="9" selection-start-column="80" selection-end-line="9" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/StartActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="45" column="33" selection-start-line="45" selection-start-column="33" selection-end-line="45" selection-end-column="33" />
-          <folding>
-            <element signature="method#onRequestPermissionsResult#0;class#StartActivity#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/HistoryActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="191" column="0" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
-          <folding>
-            <element signature="e#2641#2674#0" expanded="true" />
-            <element signature="e#2704#2742#0" expanded="true" />
-            <element signature="e#2800#3024#0" expanded="true" />
-            <element signature="e#3023#3024#0" expanded="true" />
-            <element signature="e#3083#3292#0" expanded="true" />
-            <element signature="e#3291#3292#0" expanded="true" />
-            <element signature="e#3529#3560#0" expanded="true" />
-            <element signature="e#3633#3675#0" expanded="true" />
-            <element signature="e#7214#7248#0" expanded="true" />
-            <element signature="e#8239#8240#0" expanded="true" />
-            <element signature="e#8286#8287#0" expanded="true" />
-            <element signature="method#initialiseAd#0;class#MainActivity#0" expanded="false" />
-            <marker date="1484067351114" expanded="false" signature="7587:7630" ph="&quot;All your logs are restored&quot;" />
-            <marker date="1484067351114" expanded="false" signature="15826:15836" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="15866:15872" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16015:16025" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16069:16075" ph=" }" />
-            <marker date="1484067351114" expanded="false" signature="16117:16127" ph=" { " />
-            <marker date="1484067351114" expanded="false" signature="16148:16154" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -3476,14 +3359,134 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="45" selection-start-line="5" selection-start-column="45" selection-end-line="5" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu.xml">
-      <provider editor-type-id="android-designer2">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/HistoryActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MapsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="137" column="42" selection-start-line="137" selection-start-column="42" selection-end-line="137" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/anim/scale.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/StartActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="49" column="49" selection-start-line="49" selection-start-column="49" selection-end-line="49" selection-end-column="49" />
+          <folding>
+            <element signature="e#1534#1779#0" expanded="true" />
+            <element signature="e#1778#1779#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="21" column="71" selection-start-line="21" selection-start-column="71" selection-end-line="21" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest">
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-          <folding />
+        <state relative-caret-position="356">
+          <caret line="53" column="13" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
+          <folding>
+            <element signature="e#1939#1986#0" expanded="true" />
+            <element signature="e#2130#2171#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Service/MovementTrackingService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="119" column="64" selection-start-line="119" selection-start-column="64" selection-end-line="119" selection-end-column="64" />
+          <folding>
+            <element signature="e#1436#1437#0" expanded="true" />
+            <element signature="e#1484#1485#0" expanded="true" />
+            <element signature="e#4050#4092#0" expanded="true" />
+            <element signature="e#4126#4164#0" expanded="true" />
+            <element signature="e#5036#5037#0" expanded="true" />
+            <element signature="e#5081#5082#0" expanded="true" />
+            <element signature="e#5138#5139#0" expanded="true" />
+            <element signature="e#5176#5177#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/devicroft/burnboy/Activities/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
+          <folding>
+            <element signature="e#6564#7261#0" expanded="true" />
+            <element signature="e#7102#7131#0" expanded="true" />
+            <element signature="e#7260#7261#0" expanded="true" />
+            <element signature="method#initialiseAd#0;class#MainActivity#0" expanded="false" />
+            <element signature="e#17213#17262#0" expanded="true" />
+            <element signature="e#17452#17499#0" expanded="true" />
+            <element signature="e#17685#17730#0" expanded="true" />
+            <element signature="e#17931#17980#0" expanded="true" />
+            <element signature="e#19393#19440#0" expanded="true" />
+            <element signature="e#19833#19880#0" expanded="true" />
+            <element signature="e#20270#20317#0" expanded="true" />
+            <marker date="1484084991449" expanded="false" signature="8670:8713" ph="&quot;All your logs are restored&quot;" />
+            <marker date="1484084991449" expanded="false" signature="21369:21379" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21409:21415" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21558:21568" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21612:21618" ph=" }" />
+            <marker date="1484084991449" expanded="false" signature="21660:21670" ph=" { " />
+            <marker date="1484084991449" expanded="false" signature="21691:21697" ph=" }" />
+          </folding>
         </state>
       </provider>
     </entry>
