@@ -64,6 +64,12 @@ public class HistoryActivity extends AppCompatActivity {
         return logs;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
     private ArrayList<MovementMarker> fetchMarkers(int id){
         ArrayList<MovementMarker> markers = new ArrayList<>();
 

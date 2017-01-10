@@ -45,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
                 Intent i = new Intent(StartActivity.this, MainActivity.class);
                 startActivity(i);
                 finish();
-                overridePendingTransition(android.R.anim.fade_in, 0);
+                overridePendingTransition(0, 0);
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -56,6 +56,7 @@ public class StartActivity extends AppCompatActivity {
 
 
     }
+
 
     //future add an int array as a parameter to pass in multiple permissions at the same time
     private void checkForPermission(final int PERMISSION_REQUEST_CONSTANT){

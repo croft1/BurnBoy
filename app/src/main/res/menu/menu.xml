@@ -9,6 +9,7 @@
     <item
         android:title="@string/action_history"
         android:id="@+id/action_history"
+        app:showAsAction="ifRoom"
         />
     <item
         android:title="@string/action_delete"

@@ -38,6 +38,7 @@ public class MovementMarker {
         this.snippet = "Sydney";
     }
 
+    //to randomly assign a lng value
     public MovementMarker(int i) {
         this.title = "test";
         this.time = Calendar.getInstance().getTime().toString();

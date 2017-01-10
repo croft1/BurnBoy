@@ -1,6 +1,7 @@
 package devicroft.burnboy.Models;
 
 import android.location.Location;
+import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -10,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import devicroft.burnboy.Data.DbHelper;
+import devicroft.burnboy.R;
 
 import static devicroft.burnboy.Data.MovementLogProviderContract.AUTHORITY;
 
@@ -38,14 +40,15 @@ public class MovementLog {
         endTime = new Date(startTime.getTime() + 600000);   //default is 1 hour end time
         doAddNewMarker(new MovementMarker());
         doAddNewMarker(new MovementMarker());
-        doAddNewMarker(new MovementMarker(2));
-        doAddNewMarker(new MovementMarker(4));
-        doAddNewMarker(new MovementMarker(3));
+        doAddNewMarker(new MovementMarker(-150));
+        doAddNewMarker(new MovementMarker(-151));
+        doAddNewMarker(new MovementMarker(-152));
     }
 
     public MovementLog(long start, long end) {
         startTime = new Date(start);
         endTime = new Date(end);
+        doAddNewMarker(new MovementMarker());
     }
 
     /*
@@ -195,5 +198,9 @@ public class MovementLog {
     public String getDisplayTotalDuration(){
         //take times, subtract their doubles, create new date out of that, then format it and voila
         return totalDurationFormat.format(new Date(getStartTime().getTime() - getEndTime().getTime()));
+    }
+
+    public boolean hasMarker(){
+        return (markers.size() > 0) ? true : false;
     }
 }

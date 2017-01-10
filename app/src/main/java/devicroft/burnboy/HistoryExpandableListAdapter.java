@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import devicroft.burnboy.Activities.HistoryActivity;
@@ -102,6 +105,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         return i1;
     }
 
+    //CLOSED, SUMMARY
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
         if(view == null){
@@ -117,39 +121,49 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         return view;
     }
 
+    //EXPANDED
     @Override
-    public View getChildView(final int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        if(view == null){
+    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        if(convertView == null){
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_history_expanded, null);
+            convertView = inflater.inflate(R.layout.list_history_expanded, null);
         }
-        TextView distance = (TextView) view.findViewById(R.id.expanded_distance_label);
-        TextView duration = (TextView) view.findViewById(R.id.expanded_duration_label);
-        distance.setText("Distance: " + String.valueOf(logs.get(i).getTotalDistanceMoved()));
-        duration.setText("Duration: " + logs.get(i).getDisplayTotalDuration());
+        TextView distance = (TextView) convertView.findViewById(R.id.expanded_distance_label);
+        TextView duration = (TextView) convertView.findViewById(R.id.expanded_duration_label);
+        distance.setText("Distance: " + String.valueOf(logs.get(groupPosition).getTotalDistanceMoved()));
+        duration.setText("Duration: " + logs.get(groupPosition).getDisplayTotalDuration());
         //need to have for list
-        Button mapButton = (Button) view.findViewById(R.id.expanded_map_button);
+        Button mapButton = (Button) convertView.findViewById(R.id.expanded_map_button);
         mapButton.setFocusable(false);
         mapButton.setClickable(false);
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(context, MapsActivity.class);
-                mapIntent.putParcelableArrayListExtra("markers", logs.get(i).getAllMarkerLatLng());
-                mapIntent.putExtra("start", logs.get(i).getStartTime().getTime());
-                mapIntent.putExtra("end", logs.get(i).getEndTime().getTime());
-                mapIntent.putExtra("source", "history");
-                context.startActivity(mapIntent);   //https://stackoverflow.com/questions/20235650/start-activity-when-custom-listview-button-clicked
 
+                context.startActivity(prepareIntentForDispatch(groupPosition));   //https://stackoverflow.com/questions/20235650/start-activity-when-custom-listview-button-clicked
                 Activity a = (Activity) context;    //https://stackoverflow.com/questions/30931866/overridependingtransition-not-work-in-adapterandroid
                 a.overridePendingTransition(0, 0);
             }
         });
 
-        return view;
+        return convertView;
     }
 
+    private Intent prepareIntentForDispatch(int groupPosition){
+        ArrayList<LatLng> markerLatLng = new ArrayList<LatLng>();
+        if(logs.get(groupPosition).hasMarker()){
+            markerLatLng = logs.get(groupPosition).getAllMarkerLatLng();
+        }else{
+            markerLatLng.add(new LatLng(52.9527705, -1.1877797));   //notts
+        }
+        Intent mapIntent = new Intent(context, MapsActivity.class);
+        mapIntent.putParcelableArrayListExtra("markers", markerLatLng);
+        mapIntent.putExtra("start", logs.get(groupPosition).getStartTime().getTime());
+        mapIntent.putExtra("end", logs.get(groupPosition).getEndTime().getTime());
+        mapIntent.putExtra("source", "history");
 
+        return mapIntent;
+    }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
@@ -160,7 +174,6 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean hasStableIds() {
         return false;
     }
-
 
     ///GETTER SETTERS
 

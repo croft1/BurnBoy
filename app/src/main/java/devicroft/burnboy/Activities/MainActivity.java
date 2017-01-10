@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(mapIntent);
                 break;
             case R.id.action_licenses:
-                doLicenseDialog();
+                dispatchLicenseDialog();
                 break;
             case R.id.action_history:
                 Intent historyIntent = new Intent(MainActivity.this, HistoryActivity.class);
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             case R.id.action_delete:
+
                 dispatchDeleteAllSnackbar();
                 break;
             default:
@@ -80,11 +81,32 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void doLicenseDialog() {
+    private void dispatchDeleteAllDialog(){
+        AlertDialog d = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_delete))
+                .setMessage(getString(R.string.delete_all_propose))
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dispatchDeleteAllSnackbar();
+                    }
+                })
+                .show();
+
+    }
+
+    private void dispatchLicenseDialog() {
         AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle("Licenses")
                 .setMessage(Html.fromHtml(
-                        getString(R.string.license_fab) +
+                        getString(R.string.license_fab)  +
+                                "<br><br>" +
+                        getString(R.string.license_mpandroidchart) +
                                 getString(R.string.app_name)))    //https://stackoverflow.com/questions/3235131/set-textview-text-from-html-formatted-string-resource-in-xml
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -121,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             //TODO add activity for manually inputting point locations, time, medium (bike, run etc)
             int count = getTableCount(MovementLogProviderContract.MOVEMENT_URI);
             addLog(new MovementLog());
-            dispatchToast(Integer.toString(getTableCount(MovementLogProviderContract.MOVEMENT_URI) - count)  + " added");
+            dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
         }
     };
 
@@ -131,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             startActivityLogging();
             //dispatchToast(R.string.start_fitnesslogging);
+            dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
         }
     };
 
@@ -169,25 +192,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void dispatchDeleteAllSnackbar() {
         Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.activity_main),  getString(R.string.delete_all_message), Snackbar.LENGTH_LONG)
+                .make(findViewById(R.id.activity_main),  getString(R.string.delete_message), Snackbar.LENGTH_LONG)
+                /*
+                TODO figure out a nice way to undo a deletion
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Snackbar sb = Snackbar.make( findViewById(R.id.activity_main), getString(R.string.delete_all_undo_message), Snackbar.LENGTH_SHORT);
                         sb.show();
                     }
-                });
+                }
+                */
+                ;
 
         //callback so i will actually delete when the snackbar is dismissed
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
-                deleteAllLogs();
+                dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
                 //dbHelper.deleteAll();
             }
             @Override
             public void onShown(Snackbar snackbar) {
-                super.onShown(snackbar);
+                deleteAllLogs();
             }
         });
         snackbar.show();
@@ -301,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
                 DbQueries.ID_EQUALS_PLACEHOLDER,   //selection clause to find the id
                 new String[]{"" + String.valueOf(id)}    //selection args (after WHERE ...)
             );
-
     }
 
     /*
@@ -312,19 +338,27 @@ public class MainActivity extends AppCompatActivity {
      */
     private void deleteAllLogs(){
         getContentResolver().delete(
+                MovementLogProviderContract.ALL_URI,       //deletes all rows in all tables
+                null,   //selection clause
+                null    //selection args (after WHERE ...)
+        );
+
+        /*      if other tables (other than movement and marker) are added, uncomment.
+
+        getContentResolver().delete(
                 MovementLogProviderContract.MOVEMENT_URI,       //just calling delete on movement deletes all, using CASCADE
                 null,   //selection clause
                 null    //selection args (after WHERE ...)
         );
-        /*
-        //probably only need this whilst testing, cascade should always work
-        getContentResolver().delete(
-                MovementLogProviderContract.MARKER_URI,
-                null,   //selection clause
-                null    //selection args (after WHERE ...)
-        );
+        //probably only need this whilst testing, cascade should always work - though in dev orphan markers may be made
+        getContentResolver().delete(MovementLogProviderContract.MARKER_URI,null,null);    //uri, selection clause, selection args (after WHERE ...)
         */
+
         Log.d("cr", "All logs deleted from db");
+        //TODO weird thing where i have 5 markers always there unable to delete
+    }
+
+    private void dispatchMkrMovCountsToast(){
         dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
     }
 
