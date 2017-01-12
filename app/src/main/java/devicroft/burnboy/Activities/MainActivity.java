@@ -1,5 +1,7 @@
 package devicroft.burnboy.Activities;
 
+import android.Manifest;
+import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -34,13 +36,15 @@ import devicroft.burnboy.Data.DbQueries;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.Models.MovementLog;
 import devicroft.burnboy.R;
-import devicroft.burnboy.Service.MovementTrackingService;
+import devicroft.burnboy.Services.MovementTrackingService;
 
 
 public class MainActivity extends AppCompatActivity {
 
     DbHelper dbHelper;
     private static final String LOG_TAG = "MAIN LOG";
+
+
 
 
     @Override
@@ -52,6 +56,20 @@ public class MainActivity extends AppCompatActivity {
         //TODO uncomment initialiseAd();
 
         setupFAB();
+
+
+        //when the stop action is pressed on the notification, we detect it
+        //then stop the service
+        try{
+            if(getIntent().getAction().equals(MovementTrackingService.ACTION_STOP_SERVICE)){
+                toggleActivityLogging();
+
+                //Broadcast intent to cancel notification
+                sendBroadcast(new Intent().putExtra("notificationID", getIntent().getIntExtra("notificationID", 0)));
+            }
+        }catch(NullPointerException e){
+            Log.i(LOG_TAG, "create Main found no intent");
+        }
 
     }
 
@@ -173,11 +191,11 @@ public class MainActivity extends AppCompatActivity {
             checkForPermission(PERMISSION_REQUEST_GPS_COARSE);
             checkForPermission(PERMISSION_REQUEST_INTERNET);
 
-            if(PermissionChecker.checkSelfPermission(getApplicationContext(), LOCATION_SERVICE) == PermissionChecker.PERMISSION_GRANTED){
-                startActivityLogging();
-                dispatchToast(R.string.start_fitnesslogging);
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED){
+                toggleActivityLogging();
             }else{
-                dispatchToast("Need location to start logging your activity");
+                dispatchToast(R.string.service_location_permission_failed);
             }
         }
     };
@@ -238,13 +256,46 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private boolean startActivityLogging(){
-        Log.d(LOG_TAG,"startActivityLogging");
-        startService(new Intent(this, MovementTrackingService.class));
+    private boolean toggleActivityLogging(){
+        Log.d(LOG_TAG,"toggleActivityLogging");
+
+        //TODO Change text on FAB to "Stop logging" - DO TESTING ON THIS
+
+        FloatingActionButton startButton = (FloatingActionButton) findViewById(R.id.fab_start_logging);
+        if(isServiceRunning(MovementTrackingService.class)){
+            stopService(new Intent(this, MovementTrackingService.class));
+
+            startButton.setLabelText(getString(R.string.fab_stop_logging));
+            //startButton.setLabelTextColor(R.color.colorPrimary);
+
+            dispatchToast(R.string.toast_tracking_stopped);
+        }else{
+            
+            this.startService(new Intent(this, MovementTrackingService.class));
+            startButton.setLabelText(getString(R.string.fab_start_logging));
+           // startButton.setLabelTextColor(R.color.colorAccent);
+
+            dispatchToast(R.string.toast_tracking_begun);
+
+        }
+
+
 
         return false;
     }
 
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+
+        ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            //cycle
+            if (MovementTrackingService.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     private boolean initialiseAd(){

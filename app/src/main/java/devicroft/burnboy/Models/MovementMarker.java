@@ -1,9 +1,16 @@
 package devicroft.burnboy.Models;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Calendar;
+import java.util.Locale;
 
 import devicroft.burnboy.Data.DbHelper;
 
@@ -15,6 +22,7 @@ import static devicroft.burnboy.Data.MovementLogProviderContract.AUTHORITY;
 
 public class MovementMarker {
 
+    private static final String LOG_TAG = "MARKER";
     private int id;
     private String title;
     private String time;
@@ -92,5 +100,18 @@ public class MovementMarker {
 
     public void setSnippet(String snippet) {
         this.snippet = snippet;
+    }
+
+    public double getTotalTime(){
+        double sumTime = 0;
+        try{
+
+            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            Date date = format.parse(getTime());
+            sumTime += date.getTime();
+        }catch(ParseException e ){
+            Log.e(LOG_TAG, "couldnt parse date from string");
+        }
+        return sumTime;
     }
 }

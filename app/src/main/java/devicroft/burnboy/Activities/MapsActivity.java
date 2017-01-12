@@ -1,10 +1,12 @@
 package devicroft.burnboy.Activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,16 +15,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import devicroft.burnboy.Data.DbHelper;
 import devicroft.burnboy.Data.MovementLogProviderContract;
-import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
+import devicroft.burnboy.Services.MovementTrackingService;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String LOG_TAG = "MAPS LOG";
@@ -37,6 +37,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        try{
+            if(getIntent().getAction().equals(MovementTrackingService.REQUEST_INTENT_STOP)){
+                Log.d(LOG_TAG, "stopping service from notification action press");
+                stopService(new Intent(this, MovementTrackingService.class));
+            }
+        }catch(NullPointerException e){
+            Log.i(LOG_TAG, "activity not started from notification progress button, ignore");
+        }catch(RuntimeException e){
+            Log.i(LOG_TAG, "activity not started from notification progress button, ignore");
+        }
 
 
 
@@ -57,6 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else if(source.equals("browse")){
             setupLogStartPointMap();
             testSetupMap();
+        }else if(source.equals("trackingService")){
+            setupViewProgressMap();
         }
 
         //define map settings
@@ -71,6 +84,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    }
+
+    private void setupViewProgressMap() {
+        //TODO
+        //method called when the aciton on notification bar is pressed, to view the current tracking map
     }
 
     private void testSetupMap(){
@@ -109,8 +127,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //TODO update colour of marker depending on how long ago it was
 
         }
+        if(startPoints.size() > 0){
         //animate camera towards the starting location
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startPoints.get(0), 16));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startPoints.get(0), 16));
+        }else{
+            //when there aren't any logs created, show notification.
+            Toast.makeText(this, getString(R.string.toast_map_empty), Toast.LENGTH_SHORT).show();
+        }
 
         //TODO create button that moves and focusses on next marker
         setupNextButton();

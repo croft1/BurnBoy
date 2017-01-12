@@ -50,10 +50,23 @@
             android:exported="true"
             android:icon="@drawable/icon_run"
             android:label="@string/service_movement_tracking_label"
-            android:name=".Service.MovementTrackingService"
+            android:name=".Services.MovementTrackingService"
             >
-
          </service>
+
+        <receiver
+            android:name=".Receivers.NotificationCancelReceiver" >
+            <intent-filter android:priority="50" >
+                <action android:name="com.example.cancel" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".Receivers.ActivityTrackingBroadcastReceiver" >
+            <intent-filter android:priority="999" >
+                <action android:name="ACTION_STOP_SERVICE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

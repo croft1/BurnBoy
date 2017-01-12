@@ -6,7 +6,8 @@
     <string name="action_licenses">Legal</string>
     <string name="action_history">History</string>
     <string name="action_delete">Delete all</string>
-    <string name="start_fitnesslogging">Activity Tracking Begun</string>
+    <string name="service_tracking_started">Activity Tracking Begun</string>
+    <string name="service_location_permission_failed">Need permission for location to start logging</string>
     <string name="delete_all_propose">Confirm you REALLY want to delete all logs</string>
     <string name="delete_all_confirm">Deleting all logs...</string>
     <string name="delete_all_undo">All your logs are restored</string>
@@ -16,10 +17,16 @@
     <string name="list_distance_label">Distance:</string>
     <string name="list_duration_label">Duration:</string>
     <string name="fab_start_logging">Start logging</string>
+    <string name="fab_stop_logging">Stop logging</string>
     <string name="fab_submit_weight">Log weight</string>
     <string name="fab_manual_log_entry">Manually add log</string>
     <string name="notif_logging_movement">Activity tracking started</string>
-    <string name="notif_logging_text">Press to stop tracking and return</string>
+    <string name="notif_logging_text"></string>
+    <string name="notif_action_stop_text">Stop</string>
+    <string name="notif_action_view_progress">Progress</string>
+    <string name="toast_map_empty">Go for a run to add logs on map</string>
+    <string name="toast_tracking_stopped">Tracking stopped</string>
+    <string name="toast_tracking_begun">Begun tracking</string>
     <!-- END UI STRINGS -->
 
     <!-- PERMISSION STRINGS -->
@@ -87,6 +94,16 @@ limitations under the License.</p>
     <string name="main_activity_banner_ad_unit_id">ca-app-pub-1105785661696607/4702127979</string>
     <string name="app_ad_id">ca-app-pub-1105785661696607~1748661573</string>
     <!-- END ADS -->
+
+    <!-- API KEYS -->
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyBS3gFGHSL8bIuW49iIUto88OcxhlAyxuI
+    </string>
+
+
+    <!-- API KEYS -->
+
 
 
 </resources>

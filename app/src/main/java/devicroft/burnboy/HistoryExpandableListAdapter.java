@@ -82,7 +82,11 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return logs.size();
+
+        //make sure this is one, or however many we need
+        //setting this as logs.size() makes each group have duplicate children as many as there are groups.
+        //tldr RETURN 1;
+        return 1;
     }
 
     @Override
@@ -117,7 +121,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         times.setText(logs.get(i).getFormattedStartDate() + " -> " +  logs.get(i).getFormattedEndDate());
         count.setText(String.valueOf(i + 1));
 
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+        //view.setBackgroundColor(ContextCompat.getColor(context, R.color.));
         return view;
     }
 

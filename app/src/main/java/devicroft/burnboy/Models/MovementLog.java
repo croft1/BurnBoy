@@ -28,6 +28,7 @@ public class MovementLog {
     private Date endTime;
     public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
     private double totalDistanceMoved;
+    private double totalDuration;
 
 
 
@@ -70,8 +71,8 @@ public class MovementLog {
         }
     }
 
-    private void addToTotalDuration(){
-
+    private void addToTotalDuration(Double time){
+        totalDuration += time;
     }
 
     private void addToTotalDistance(LatLng latlng){
@@ -98,7 +99,7 @@ public class MovementLog {
     private void doAddNewMarker(MovementMarker m){
         markers.add(m);
         addToTotalDistance(m.getLatlng());
-        //TODO add time addToTotalDuration();
+        addToTotalDuration(m.getTotalTime());
     }
 
 
