@@ -23,7 +23,7 @@ import devicroft.burnboy.R;
 public class StartActivity extends AppCompatActivity {
 
 
-    private static final int SPLASH_DISPLAY_LENGTH = 800;
+    private static final int SPLASH_DISPLAY_LENGTH = 200;   //TODO update on release
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

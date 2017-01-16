@@ -22,7 +22,7 @@ import java.util.Date;
 import devicroft.burnboy.Data.DbHelper;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.R;
-import devicroft.burnboy.Services.MovementTrackingService;
+import devicroft.burnboy.Services.LogService;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String LOG_TAG = "MAPS LOG";
@@ -39,10 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         try{
-            if(getIntent().getAction().equals(MovementTrackingService.REQUEST_INTENT_STOP)){
-                Log.d(LOG_TAG, "stopping service from notification action press");
-                stopService(new Intent(this, MovementTrackingService.class));
-            }
+            //TODO for tracking progress function from notification
         }catch(NullPointerException e){
             Log.i(LOG_TAG, "activity not started from notification progress button, ignore");
         }catch(RuntimeException e){

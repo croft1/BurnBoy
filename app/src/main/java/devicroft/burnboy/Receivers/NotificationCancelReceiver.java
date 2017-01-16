@@ -24,7 +24,7 @@ public class NotificationCancelReceiver extends BroadcastReceiver {
         Log.d(LOG_TAG, "onReceive");
         //when received, takes the intent with notification id and the cancels that notif
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(intent.getIntExtra("notificationID", 0));
+        nm.cancel(intent.getIntExtra("id", 0));
 
     }
 

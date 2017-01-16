@@ -2,9 +2,6 @@ package devicroft.burnboy.Activities;
 
 import android.Manifest;
 import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -15,16 +12,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -56,10 +46,8 @@ import devicroft.burnboy.Data.DbQueries;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.Models.MovementLog;
 import devicroft.burnboy.R;
-import devicroft.burnboy.Receivers.ActivityTrackingBroadcastReceiver;
-import devicroft.burnboy.Services.LogLocInterface;
+import devicroft.burnboy.Receivers.NotificationCancelReceiver;
 import devicroft.burnboy.Services.LogService;
-import devicroft.burnboy.Services.MovementTrackingService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MAIN LOG";
 
     private Messenger messenger;
-
+    LogService.LogBinder logBinder = null;
+    private boolean serviceRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,18 +66,66 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO uncomment initialiseAd();
         setupFAB();
-        //when the stop action is pressed on the notification, we detect it
-        //then stop the service
-
-        //bad name..
-        ActivityTrackingBroadcastReceiver receiver = new ActivityTrackingBroadcastReceiver();
-        IntentFilter filter = new IntentFilter("cancel");
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
-
+        IntentFilter filter = new IntentFilter("devicroft.BurnBoy.CANCEL_NOTIFY");
+        this.registerReceiver(new NotificationCancelReceiver(), filter);
 
 
     }
 
+    //MIDDLE icon on fab list
+    private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d(LOG_TAG,"FAB CLICK startLoggingFab");
+            checkForPermission(PERMISSION_REQUEST_GPS_FINE);
+            checkForPermission(PERMISSION_REQUEST_GPS_COARSE);
+            checkForPermission(PERMISSION_REQUEST_INTERNET);
+
+            FloatingActionButton startStop = (FloatingActionButton) findViewById(R.id.fab_start_logging);
+            if(serviceRunning){
+                Log.d(LOG_TAG, "Stopped tracking pressed");
+                Toast.makeText(getApplicationContext(),"Stopped tracking", Toast.LENGTH_SHORT).show();
+                stopService();
+                serviceRunning = false;
+                startStop.setLabelText("Start tracking");
+            }else{
+                Log.d(LOG_TAG, "Start tracking pressed");
+                Toast.makeText(getApplicationContext(),"Started tracking", Toast.LENGTH_SHORT).show();
+                initialiseService();
+                serviceRunning = true;
+                startStop.setLabelText("Stop tracking");
+            }
+
+        }
+    };
+
+    private void initialiseService() {
+        Log.d(LOG_TAG, "initService");
+        this.startService(new Intent(this, LogService.class));
+        this.bindService(new Intent(this, LogService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void stopService(){
+        Log.d(LOG_TAG, "stopService");
+        this.unbindService(serviceConnection);
+        this.stopService(new Intent(this, LogService.class));
+    }
+
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder binderService) {
+            Log.d(LOG_TAG, "serviceConnected" + componentName.flattenToShortString());
+            logBinder = (LogService.LogBinder) binderService;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.d(LOG_TAG, "serviceDisconnected" + componentName.flattenToShortString());
+            logBinder = null;
+        }
+    };
 
 
     @Override
@@ -98,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         mi.inflate(R.menu.menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(LOG_TAG, "onOptionsItemSelected");
@@ -129,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
     private void dispatchDeleteAllDialog(){
         Log.d(LOG_TAG, "dispatchDeleteAllDialog");
         AlertDialog d = new AlertDialog.Builder(this)
@@ -149,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 .show();
 
     }
-
     private void dispatchLicenseDialog() {
         Log.d(LOG_TAG, "dispatchLicenseDialog");
         AlertDialog d = new AlertDialog.Builder(this)
@@ -171,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
         textView.setAllCaps(false);
         textView.setMovementMethod(new ScrollingMovementMethod());
     }
-
     private void setupFAB() {
         Log.d(LOG_TAG,"setupFAB");
         //https://github.com/Clans/FloatingActionButton
@@ -184,10 +217,6 @@ public class MainActivity extends AppCompatActivity {
         weightButton.setOnClickListener(weightLogFabClickListener);
     }
 
-    /*
-            CLICK LISTENERS
-     */
-
     //TOP icon on fab list
     private View.OnClickListener addLogFabClickListener = new View.OnClickListener() {
         @Override
@@ -199,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
             dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
         }
     };
-
     //BOTTOM icon on fab list
     private View.OnClickListener weightLogFabClickListener = new View.OnClickListener() {
         @Override
@@ -213,66 +241,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //MIDDLE icon on fab list
-    private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d(LOG_TAG,"FAB CLICK startLoggingFab");
-            checkForPermission(PERMISSION_REQUEST_GPS_FINE);
-            checkForPermission(PERMISSION_REQUEST_GPS_COARSE);
-            checkForPermission(PERMISSION_REQUEST_INTERNET);
-
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED){
-                if(isServiceRunning(LogService.class)){
-                    Log.d(LOG_TAG, "Press STOPS service");
-                    stopService();
-                }else{
-                    initialiseServices();
-                    Log.d(LOG_TAG, "Press STARTS service");
-                }
-            }else{
-                dispatchToast(R.string.service_location_permission_failed);
-            }
-        }
-    };
-
-
-
-    //END CLICK LISTENERS
-
-    LogService.LogBinder logService = null;
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            //messenger = new Messenger(service);
-            logService  = (LogService.LogBinder) service;
-            logService.registerCallback(loggingCallback);
-            Log.d(LOG_TAG, "serviceConnected" + componentName.flattenToShortString());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.d(LOG_TAG, "serviceDisconnected" + componentName.flattenToShortString());
-            messenger = null;
-            logService.unregisterCallback(loggingCallback);
-        }
-    };
-
-    LogLocInterface loggingCallback = new LogLocInterface(){
-        @Override
-        public void newLocationEvent(final Location location) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TextView tv = (TextView) findViewById(R.id.callbackText);
-                    tv.setText("Loc: " + location.toString());
-                }
-            });
-        }
-    };
 
 
 
@@ -281,15 +249,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void initialiseServices(){
-        Log.d(LOG_TAG, "initialiseServices");
-        this.startService(new Intent(getApplicationContext(), LogService.class));
-        this.bindService(new Intent(this, LogService.class),serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void stopService(){
-        this.stopService(new Intent(this, LogService.class));
-    }
 
 
 
@@ -344,12 +303,8 @@ public class MainActivity extends AppCompatActivity {
         });
         snackbar.show();
     }
-
-
-
     private boolean isServiceRunning(Class<?> serviceClass) {
         //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
-
         ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
         final List<ActivityManager.RunningServiceInfo> services = manager.getRunningServices(Integer.MAX_VALUE);
 
@@ -361,7 +316,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
 
     private boolean initialiseAd(){
         Log.d(LOG_TAG,"initialiseAd");
@@ -377,21 +331,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
 
     }
-
-
-    /*
-            TEST METHODS
-     */
-
-    private void dbTest(){
-        //initDbh();
-
-        addLog(new MovementLog());
-
-    }
-
-
-    //END TEST METHODS
 
     /*
     *       CONTENT PROVIDER METHODS METHOODSSS
@@ -418,10 +357,7 @@ public class MainActivity extends AppCompatActivity {
             values.put(MovementLogProviderContract.MKR_FK_MOVEMENT_ID, getIdOfLastInserted());
             cr.insert(MovementLogProviderContract.MARKER_URI, values);
         }
-
-
-    }
-
+   }
     private String getCountSummaryString(){
         //query count on movement table to get a [count] array that has an int, instead of returning all values and couting them. faster
         Cursor c = getContentResolver().query(MovementLogProviderContract.MOVEMENT_URI, new String[] {DbQueries.GET_TABLE_COUNT_AS_CURSORINT}, null, null, null);
@@ -443,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("cr", summary.toString());
         return summary.toString();
     }
-
     private int getIdOfLastInserted(){
         Log.d(LOG_TAG,"getIdOfLastInserted");
         Cursor c = getContentResolver().query(
@@ -458,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
 
         return (c.getCount() > 0) ? c.getInt(0) : -1;    //checks if theres a row in the db
     }
-
     //for placeholders (?) must have an equal number of new String[] arguments to make it work
     public int deleteLog(int id){
         Log.d(LOG_TAG,"deleteLog");
@@ -470,7 +404,6 @@ public class MainActivity extends AppCompatActivity {
             );
         return success;
     }
-
     /*
             delete all logs clears all rows from the movement table
             marker table has movement id as FK, so it will cascade delete itself (many markers to a log)
@@ -499,11 +432,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("cr", "All logs deleted from db");
         //TODO weird thing where i have 5 markers always there unable to delete
     }
-
     private void dispatchMkrMovCountsToast(){
         dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
     }
-
     private int getTableCount(Uri tableUriFromContract){
         Log.d(LOG_TAG,"gettablecount");
         Cursor c = getContentResolver().query(
@@ -517,22 +448,14 @@ public class MainActivity extends AppCompatActivity {
         //display it
         return c.getInt(0);
     }
-
-
     //END CONTENT PROVIDER METHODS
-
-
     /*
             PERMISSION METHODS
      */
-
     private static final int PERMISSION_REQUEST_INTERNET = 1;
     private static final int PERMISSION_REQUEST_GPS_COARSE = 2;
     private static final int PERMISSION_REQUEST_GPS_FINE = 3;
-
-
-
-    //future add an int array as a parameter to pass in multiple permissions at the same time
+   //future add an int array as a parameter to pass in multiple permissions at the same time
     private void checkForPermission(final int PERMISSION_REQUEST_CONSTANT){
         //https://developer.android.com/training/permissions/requesting.html
 
