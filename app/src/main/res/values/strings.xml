@@ -103,6 +103,9 @@ limitations under the License.</p>
 
 
     <!-- API KEYS -->
+    <!-- TAG KEYS -->
+    <string name="row_delete_key">row_delete_key</string>
+    <!-- END TAG KEYS -->
 
 
 

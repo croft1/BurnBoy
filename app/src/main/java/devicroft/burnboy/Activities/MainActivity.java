@@ -2,17 +2,35 @@ package devicroft.burnboy.Activities;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Binder;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,20 +49,24 @@ import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.List;
+
 import devicroft.burnboy.Data.DbHelper;
 import devicroft.burnboy.Data.DbQueries;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.Models.MovementLog;
 import devicroft.burnboy.R;
+import devicroft.burnboy.Receivers.ActivityTrackingBroadcastReceiver;
+import devicroft.burnboy.Services.LogLocInterface;
+import devicroft.burnboy.Services.LogService;
 import devicroft.burnboy.Services.MovementTrackingService;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    DbHelper dbHelper;
     private static final String LOG_TAG = "MAIN LOG";
 
-
+    private Messenger messenger;
 
 
     @Override
@@ -54,24 +76,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO uncomment initialiseAd();
-
         setupFAB();
-
-
         //when the stop action is pressed on the notification, we detect it
         //then stop the service
-        try{
-            if(getIntent().getAction().equals(MovementTrackingService.ACTION_STOP_SERVICE)){
-                toggleActivityLogging();
 
-                //Broadcast intent to cancel notification
-                sendBroadcast(new Intent().putExtra("notificationID", getIntent().getIntExtra("notificationID", 0)));
-            }
-        }catch(NullPointerException e){
-            Log.i(LOG_TAG, "create Main found no intent");
-        }
+        //bad name..
+        ActivityTrackingBroadcastReceiver receiver = new ActivityTrackingBroadcastReceiver();
+        IntentFilter filter = new IntentFilter("cancel");
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+
+
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -182,24 +200,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //MIDDLE icon on fab list
-    private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d(LOG_TAG,"FAB CLICK startLoggingFab");
-            checkForPermission(PERMISSION_REQUEST_GPS_FINE);
-            checkForPermission(PERMISSION_REQUEST_GPS_COARSE);
-            checkForPermission(PERMISSION_REQUEST_INTERNET);
-
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED){
-                toggleActivityLogging();
-            }else{
-                dispatchToast(R.string.service_location_permission_failed);
-            }
-        }
-    };
-
     //BOTTOM icon on fab list
     private View.OnClickListener weightLogFabClickListener = new View.OnClickListener() {
         @Override
@@ -213,8 +213,88 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //MIDDLE icon on fab list
+    private View.OnClickListener startLoggingFabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d(LOG_TAG,"FAB CLICK startLoggingFab");
+            checkForPermission(PERMISSION_REQUEST_GPS_FINE);
+            checkForPermission(PERMISSION_REQUEST_GPS_COARSE);
+            checkForPermission(PERMISSION_REQUEST_INTERNET);
+
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED){
+                if(isServiceRunning(LogService.class)){
+                    Log.d(LOG_TAG, "Press STOPS service");
+                    stopService();
+                }else{
+                    initialiseServices();
+                    Log.d(LOG_TAG, "Press STARTS service");
+                }
+            }else{
+                dispatchToast(R.string.service_location_permission_failed);
+            }
+        }
+    };
+
+
 
     //END CLICK LISTENERS
+
+    LogService.LogBinder logService = null;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            //messenger = new Messenger(service);
+            logService  = (LogService.LogBinder) service;
+            logService.registerCallback(loggingCallback);
+            Log.d(LOG_TAG, "serviceConnected" + componentName.flattenToShortString());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.d(LOG_TAG, "serviceDisconnected" + componentName.flattenToShortString());
+            messenger = null;
+            logService.unregisterCallback(loggingCallback);
+        }
+    };
+
+    LogLocInterface loggingCallback = new LogLocInterface(){
+        @Override
+        public void newLocationEvent(final Location location) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tv = (TextView) findViewById(R.id.callbackText);
+                    tv.setText("Loc: " + location.toString());
+                }
+            });
+        }
+    };
+
+
+
+
+
+
+
+
+    private void initialiseServices(){
+        Log.d(LOG_TAG, "initialiseServices");
+        this.startService(new Intent(getApplicationContext(), LogService.class));
+        this.bindService(new Intent(this, LogService.class),serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void stopService(){
+        this.stopService(new Intent(this, LogService.class));
+    }
+
+
+
+
+
 
     private void dispatchToast(int stringID){
         Log.d(LOG_TAG,"dispatchToast stringID");
@@ -223,6 +303,15 @@ public class MainActivity extends AppCompatActivity {
     private void dispatchToast(String string){
         Log.d(LOG_TAG,"dispatchToast stringmessage");
         Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(serviceConnection!=null) {
+            unbindService(serviceConnection);
+            serviceConnection = null;
+        }
     }
 
     private void dispatchDeleteAllSnackbar() {
@@ -256,41 +345,17 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private boolean toggleActivityLogging(){
-        Log.d(LOG_TAG,"toggleActivityLogging");
 
-        //TODO Change text on FAB to "Stop logging" - DO TESTING ON THIS
-
-        FloatingActionButton startButton = (FloatingActionButton) findViewById(R.id.fab_start_logging);
-        if(isServiceRunning(MovementTrackingService.class)){
-            stopService(new Intent(this, MovementTrackingService.class));
-
-            startButton.setLabelText(getString(R.string.fab_stop_logging));
-            //startButton.setLabelTextColor(R.color.colorPrimary);
-
-            dispatchToast(R.string.toast_tracking_stopped);
-        }else{
-            
-            this.startService(new Intent(this, MovementTrackingService.class));
-            startButton.setLabelText(getString(R.string.fab_start_logging));
-           // startButton.setLabelTextColor(R.color.colorAccent);
-
-            dispatchToast(R.string.toast_tracking_begun);
-
-        }
-
-
-
-        return false;
-    }
 
     private boolean isServiceRunning(Class<?> serviceClass) {
         //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
 
         ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            //cycle
-            if (MovementTrackingService.getName().equals(service.service.getClassName())) {
+        final List<ActivityManager.RunningServiceInfo> services = manager.getRunningServices(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
+            if (runningServiceInfo.service.getClassName().equals(serviceClass.getSimpleName()) ||
+                    runningServiceInfo.service.getClassName().equals("LogService.java")){
                 return true;
             }
         }
@@ -395,7 +460,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //for placeholders (?) must have an equal number of new String[] arguments to make it work
-    private void deleteLog(int id){
+    public int deleteLog(int id){
         Log.d(LOG_TAG,"deleteLog");
         //delete individual movement log
         int success = getContentResolver().delete(
@@ -403,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
                 DbQueries.ID_EQUALS_PLACEHOLDER,   //selection clause to find the id
                 new String[]{"" + String.valueOf(id)}    //selection args (after WHERE ...)
             );
+        return success;
     }
 
     /*

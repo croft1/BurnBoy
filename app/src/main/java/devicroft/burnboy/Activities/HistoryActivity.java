@@ -2,12 +2,16 @@ package devicroft.burnboy.Activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,11 +20,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import devicroft.burnboy.Data.DbHelper;
+import devicroft.burnboy.Data.DbQueries;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.HistoryExpandableListAdapter;
 import devicroft.burnboy.Models.MovementLog;
 import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
+
 
 public class HistoryActivity extends AppCompatActivity {
     private static final String LOG_TAG = "HISTORY LOG";
@@ -39,32 +45,35 @@ public class HistoryActivity extends AppCompatActivity {
         //expand shows the map button too, which goes to the view activity on map part
 
         list = (ExpandableListView) findViewById(R.id.historyList);
-        adapter = new HistoryExpandableListAdapter(this, fetchLogs());
+        adapter = new HistoryExpandableListAdapter(this);
         list.setAdapter(adapter);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int toDeleteId = (int) view.getTag(R.string.row_delete_key);
+
+                Log.d(LOG_TAG,"delete log from long click");
+                //delete individual movement log
+                int success = getContentResolver().delete(
+                        MovementLogProviderContract.MOVEMENT_URI,   //set uri
+                        DbQueries.ID_EQUALS_PLACEHOLDER,   //selection clause to find the id
+                        new String[]{"" + String.valueOf(toDeleteId)}    //selection args (after WHERE ...)
+                );
+
+                Snackbar.make(findViewById(R.id.activity_history), getString(R.string.delete_message), Snackbar.LENGTH_SHORT).show();
+
+                //probably only need one of these
+                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetInvalidated();
+
+                return (success>0)?true:false;
+            }
+        });
+        Toast.makeText(this,"Hold row to delete log",Toast.LENGTH_SHORT).show();
 
     }
 
-    private ArrayList<MovementLog> fetchLogs() {
-        Log.d(LOG_TAG,"fetchLogs");
-        Cursor cursor = getContentResolver().query(MovementLogProviderContract.MOVEMENT_URI, null, null, null, null);
 
-        ArrayList<MovementLog> logs = new ArrayList<>();
-
-
-        cursor.moveToFirst();
-        for (int i = 0; i < cursor.getCount(); i++) {
-            MovementLog m = new MovementLog(
-            cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_START_TIME)),
-            cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_END_TIME))
-            );
-            m.set_id(cursor.getInt(cursor.getColumnIndex(MovementLogProviderContract.MOV_ID)));
-            logs.add(m);
-            logs.get(i).setMarkers(fetchMarkers(logs.get(i).get_id()));
-
-        }
-
-        return logs;
-    }
 
     @Override
     public void onBackPressed() {
@@ -73,38 +82,7 @@ public class HistoryActivity extends AppCompatActivity {
         overridePendingTransition(0,0);
     }
 
-    private ArrayList<MovementMarker> fetchMarkers(int id){
-        Log.d(LOG_TAG,"fetchMarkers");
-        ArrayList<MovementMarker> markers = new ArrayList<>();
 
-        //So on the MARKER TABLE
-        //we return all
-        //that, inside the FK column that
-        //matches the id desired
-        Cursor c = getContentResolver().query(
-                MovementLogProviderContract.MARKER_URI,  //content uri of table
-                null,           //to return ALL for each row
-                MovementLogProviderContract.MKR_FK_MOVEMENT_ID + "=?",           //selection clause
-                new String[]{String.valueOf(id)},           //selection args
-                null);          //sort order
-        //go to the entry with the count integer
-        c.moveToFirst();
-
-        for (int i = 0; i < c.getCount(); i++) {
-            MovementMarker m = new MovementMarker();
-            String got = c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_LAT));
-            Double lat = Double.parseDouble(got);
-            got = c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_LNG));
-            Double lng = Double.parseDouble(got);
-            m.setLatlng(new LatLng(lat, lng));
-            m.setSnippet(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_SNIPPET)));
-            m.setTitle(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TITLE)));
-            m.setTime(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TIME)));
-            m.setId(c.getInt(c.getColumnIndex(MovementLogProviderContract.MKR_ID_MARKER)));
-            markers.add(new MovementMarker());
-        }
-        return markers;
-    }
 
 
 

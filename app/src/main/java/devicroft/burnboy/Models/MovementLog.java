@@ -1,7 +1,6 @@
 package devicroft.burnboy.Models;
 
 import android.location.Location;
-import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -11,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import devicroft.burnboy.Data.DbHelper;
-import devicroft.burnboy.R;
 
 import static devicroft.burnboy.Data.MovementLogProviderContract.AUTHORITY;
 
@@ -24,11 +22,15 @@ public class MovementLog {
     int _id;
     private ArrayList<MovementMarker> markers = new ArrayList<>();
     private ArrayList<Date> markerDate = new ArrayList<>();
-    private Date startTime;
-    private Date endTime;
+    private Date startTime = null;
+    private Date endTime = null;
     public static final String CONTENT_PATH = "content://"+AUTHORITY+"/"+ DbHelper.TABLENAME_MOVEMENT+"/";
     private double totalDistanceMoved;
     private double totalDuration;
+
+
+
+    private boolean savedInDatabase = false;
 
 
 
@@ -39,17 +41,22 @@ public class MovementLog {
         //starting a new log fresh
         startTime = Calendar.getInstance().getTime();
         endTime = new Date(startTime.getTime() + 600000);   //default is 1 hour end time
-        doAddNewMarker(new MovementMarker());
-        doAddNewMarker(new MovementMarker());
-        doAddNewMarker(new MovementMarker(-150));
-        doAddNewMarker(new MovementMarker(-151));
-        doAddNewMarker(new MovementMarker(-152));
+        addNewMarker(new MovementMarker());
+        addNewMarker(new MovementMarker());
+        addNewMarker(new MovementMarker(-150));
+        addNewMarker(new MovementMarker(-151));
+        addNewMarker(new MovementMarker(-152));
     }
 
-    public MovementLog(long start, long end) {
+    public MovementLog(long startInMillis, long endInMillis) {
+        startTime = new Date(startInMillis);
+        endTime = new Date(endInMillis);
+        addNewMarker(new MovementMarker());
+    }
+
+    //used inside service to create an object, then populate with markers and data as it goes
+    public MovementLog(long start) {
         startTime = new Date(start);
-        endTime = new Date(end);
-        doAddNewMarker(new MovementMarker());
     }
 
     /*
@@ -96,7 +103,7 @@ public class MovementLog {
 
     //here as we add more and more markers to this object, we tally up the total distance between each marker.
     //we do it here to avoid one big calculation (see calculateAllMarkersDistanceMoved when we are inflating the layout: its already nicely stored
-    private void doAddNewMarker(MovementMarker m){
+    public void addNewMarker(MovementMarker m){
         markers.add(m);
         addToTotalDistance(m.getLatlng());
         addToTotalDuration(m.getTotalTime());
@@ -145,6 +152,7 @@ public class MovementLog {
 
     public void set_id(int _id) {
         this._id = _id;
+        this.setSavedInDatabase(true);
     }
 
     public ArrayList<MovementMarker> getMarkers() {
@@ -204,4 +212,13 @@ public class MovementLog {
     public boolean hasMarker(){
         return (markers.size() > 0) ? true : false;
     }
+
+    public boolean isSavedInDatabase() {
+        return savedInDatabase;
+    }
+
+    public void setSavedInDatabase(boolean savedInDatabase) {
+        this.savedInDatabase = savedInDatabase;
+    }
+
 }

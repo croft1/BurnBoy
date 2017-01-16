@@ -5,16 +5,22 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -22,6 +28,8 @@ import android.widget.Toast;
 
 import devicroft.burnboy.Activities.MainActivity;
 import devicroft.burnboy.Activities.MapsActivity;
+import devicroft.burnboy.Data.DbHelper;
+import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.R;
 import devicroft.burnboy.Receivers.ActivityTrackingBroadcastReceiver;
 
@@ -39,6 +47,13 @@ public class MovementTrackingService extends IntentService {
     public static final int REQUEST_INTENT_PROGRESS = 2;
     public static final int REQUEST_INTENT_RETURNTOMAINACTIVITY = 0;
 
+    //passes at the start of creating service, to add a log we'll update as it goes
+    public static final int NEW_LOG_CREATED = 0;
+    //when we have a new location, time etc, we'll add this to the log
+    public static final int NEW_MARKER_CAPTURED = 1;
+
+
+
     public static final String ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE";
     public static final String ACTION_VIEW_PROGRESS = "ACTION_VIEW_PROGRESS";
     public static final String ACTION_RECEIVE_NEW_LOCATION = "ACTION_RECEIVE_NEW_LOCATION";
@@ -49,12 +64,15 @@ public class MovementTrackingService extends IntentService {
 
     private static NotificationManager notificationManager = null;
     private BroadcastReceiver trackingReceiver;
+    private static int services_log_id = 0;
 
     LocationListener[] locationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER),
             new LocationListener(LocationManager.PASSIVE_PROVIDER)
     };
+
+    Messenger messenger;
 
     public MovementTrackingService(String name) {
         super(name);
@@ -75,7 +93,61 @@ public class MovementTrackingService extends IntentService {
         initialiseLocationManager();
         initialiseBroadcastReceiver();
 
+        messenger = new Messenger(new LocationLoggingHandler());
+
+
     }
+
+    private class LocationLoggingHandler extends Handler {
+        public LocationLoggingHandler() {
+            super();
+            Log.d(LOG_TAG, "Handler created");
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case NEW_LOG_CREATED:
+
+                    break;
+                case NEW_MARKER_CAPTURED:
+
+
+                    break;
+
+                default:
+                    Log.d(LOG_TAG, "default message passed");
+            }
+        }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(LOG_TAG, "SERVICE onStartCommand: " + "flags: " + flags + "startId: " + startId);
+
+        //https://stackoverflow.com/questions/4805269/programmatically-register-a-broadcast-receiver?rq=1
+        if (ACTION_STOP_SERVICE.equals(intent.getAction())) {
+            Log.d(LOG_TAG,"called to cancel service");
+            notificationManager.cancel(NOTIFICATION_ID);
+            stopSelf();
+        }
+
+        final LocationLoggingHandler handler = new LocationLoggingHandler();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+//                setupNewLogForDbId();
+                Toast.makeText(getApplicationContext(), "servicing", Toast.LENGTH_SHORT);
+            }
+        };
+        handler.postDelayed(r, LOCATION_CHECK_DELAY);
+
+        initialiseNotification();
+
+        return START_STICKY;
+    }
+
+
 
     private void initialiseBroadcastReceiver() {
         IntentFilter trackingFilter = new IntentFilter();
@@ -88,12 +160,15 @@ public class MovementTrackingService extends IntentService {
     public void onStart(Intent intent, int startId) {
 
         Log.d(LOG_TAG, "SERVICE onStart");
+
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
         Log.d(LOG_TAG, "SERVICE onDestroy");
+
+        //TODO save end time in database
 
         if (locationManager != null) {
             for (int i = 0; i < locationListeners.length; i++) {
@@ -120,7 +195,7 @@ public class MovementTrackingService extends IntentService {
     public IBinder onBind(Intent intent) {
         Log.d(LOG_TAG, "SERVICE onBind");
 
-        return null;
+        return messenger.getBinder();
     }
 
     @Override
@@ -128,20 +203,47 @@ public class MovementTrackingService extends IntentService {
         Log.d(LOG_TAG, "SERVICE onHandleIntent");
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(LOG_TAG, "SERVICE onStartCommand: " + "flags: " + flags + "startId: " + startId);
 
-        //https://stackoverflow.com/questions/4805269/programmatically-register-a-broadcast-receiver?rq=1
-        if (ACTION_STOP_SERVICE.equals(intent.getAction())) {
-            Log.d(LOG_TAG,"called to cancel service");
-            notificationManager.cancel(NOTIFICATION_ID);
-            stopSelf();
+
+    private int setupNewLogForDbId(){
+        //here the
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        long currentTime = System.currentTimeMillis();
+        values.put(MovementLogProviderContract.MOV_START_TIME, currentTime);
+        cr.insert(MovementLogProviderContract.MOVEMENT_URI, values);
+
+        Log.d("cr", currentTime + " log added");
+
+        Log.d(LOG_TAG, "getIdOfLastInserted");
+        Cursor c = getContentResolver().query(
+                MovementLogProviderContract.MOVEMENT_URI,  //content uri of table
+                new String[] {MovementLogProviderContract.MOV_ID},  //to return for each row
+                null,           //selection clause
+                null,           //selection args
+                DbHelper.COL_ID_MOVE + " DESC limit 1");          //sort order
+        //go to the entry with the count integer
+        c.moveToFirst();
+        if(c.getCount() > 0){
+            services_log_id = c.getInt(0);
         }
+        //get the integer from the ID column  NOT getColumnIndex(DbHelper.COL_ID_MOVE), that returns its position in table - meta - not value inside
+        return services_log_id;
 
-        initialiseNotification();
+    }
 
-        return START_STICKY;
+    private void addPositionForLog(Location location){
+        //here we take the location fetched by location listener and add it to db
+        //use services_log_id to create fk in marker table
+        ContentResolver cr = this.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(MovementLogProviderContract.MKR_TITLE, location.getProvider());      //TODO change getProvider() to something more meaningful
+        values.put(MovementLogProviderContract.MKR_LAT, location.getLatitude());
+        values.put(MovementLogProviderContract.MKR_LNG, location.getLongitude());
+        values.put(MovementLogProviderContract.MKR_SNIPPET, "Altitude: " + String.valueOf(location.getAltitude())); //TODO change to meaningful snippet, MAYBE. i like altitude there, though refactoring would need to be done
+        values.put(MovementLogProviderContract.MKR_TIME, location.getTime());
+        values.put(MovementLogProviderContract.MKR_FK_MOVEMENT_ID, services_log_id);
+        cr.insert(MovementLogProviderContract.MARKER_URI, values);
     }
 
     @Override
@@ -205,8 +307,8 @@ public class MovementTrackingService extends IntentService {
                 .setContentTitle(getString(R.string.notif_logging_movement))
                 .setContentText(getString(R.string.notif_logging_text))
                 .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
-                //.setAutoCancel(true)            //cancels when pressed
-                .setAutoCancel(false)            //remains in notif bar when  pressed
+                .setAutoCancel(true)            //cancels when pressed
+                //.setAutoCancel(false)            //remains in notif bar when  pressed
                 .setWhen(System.currentTimeMillis())
                 .setUsesChronometer(true);  //stopwatch counts time from when starts, displays next to notif title
 
@@ -285,6 +387,7 @@ public class MovementTrackingService extends IntentService {
     /*/
     Loc Listener
      */
+
     private class LocationListener implements android.location.LocationListener{
         Location lastLocation;
 
@@ -303,12 +406,17 @@ public class MovementTrackingService extends IntentService {
         public void onStatusChanged(String s, int i, Bundle bundle) {
             Log.d(LOG_TAG, "StatusChanged: " + s + i + "LastLoc: " + lastLocation);
 
+
+            addPositionForLog(lastLocation);
+
+
+            /*
             // likely where we we latlng
             //TODO go through this to get latlng for movement
             Intent intent = new Intent();
             intent.putExtra(ACTION_RECEIVE_NEW_LOCATION, bundle);
             sendBroadcast(intent);
-
+            */
 
         }
 

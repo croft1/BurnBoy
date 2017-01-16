@@ -46,7 +46,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String CREATE_MOVEMENT_LOG_TABLE =
             "CREATE TABLE " +  TABLENAME_MOVEMENT + " ( " +
                     COL_ID_MOVE + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                    COL_STARTTIME + " INTEGER, " +
+                    COL_STARTTIME + " INTEGER NOT NULL, " +
                     COL_ENDTIME + " INTEGER" +
                     ");";
 
