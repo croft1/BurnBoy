@@ -22,6 +22,7 @@ public class MovementLogContentProvider extends ContentProvider {
     private static final int MOV_FIND = 222;
     private static final int MKR_ALL = 333;
     private static final int MKR_FIND = 444;
+    private static final String TAG = "LOG_CONTENT_PROV";
 
     private DbHelper dbHelper = null;
 
@@ -46,7 +47,7 @@ public class MovementLogContentProvider extends ContentProvider {
     //create reference to dbhelper instance
     @Override
     public boolean onCreate() {
-        Log.d("Provider", "Created");
+        Log.d(TAG, "Created");
         this.dbHelper =  new DbHelper(this.getContext());
         return false;
     }
@@ -55,7 +56,7 @@ public class MovementLogContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d("CP", uri.toString() + " " + uriMatcher.match(uri));
+        Log.d(TAG, uri.toString() + " " + uriMatcher.match(uri));
         //get db to query
         SQLiteDatabase db  = dbHelper.getWritableDatabase();
 
@@ -81,6 +82,7 @@ public class MovementLogContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
+        Log.d(TAG, "getType");
         if(uri.getLastPathSegment() == null) {
             //returns cursor for db of the whole table
             return MovementLogProviderContract.CONTENT_TYPE_MULTIPLE;
@@ -93,6 +95,7 @@ public class MovementLogContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        Log.d(TAG,"insert");
         //get db
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String tableName = null;
@@ -107,7 +110,7 @@ public class MovementLogContentProvider extends ContentProvider {
                 tableName = DbHelper.TABLENAME_MARKER;
                 break;
             default:
-                Log.e("provider", "NO URIMATCH WHEN INSERTING, REEVALUATE LIFE");
+                Log.e(TAG, "NO URIMATCH WHEN INSERTING, REEVALUATE LIFE");
         }
         //add switch if other tables are added
         long id = db.insert(tableName, null, contentValues);
@@ -115,7 +118,7 @@ public class MovementLogContentProvider extends ContentProvider {
 
         //just for logging, to see if and where the content was appended
         Uri nu = ContentUris.withAppendedId(uri, id);
-        Log.d("provider", nu.toString() + "added");
+        Log.d(TAG, nu.toString() + "added");
 
         return nu;
     }
@@ -129,14 +132,14 @@ public class MovementLogContentProvider extends ContentProvider {
 
         int count = 0;
 
-        Log.d("db", "deleting from" + uri + where);
+        Log.d(TAG, "deleting from" + uri + where);
         try{
             count = db.delete(DbHelper.TABLENAME_MOVEMENT, where, whereArgs);
         }catch(SQLiteException e){
-            Log.e("db", "deletion error");
+            Log.e(TAG, "deletion error");
             e.printStackTrace();
         }catch(CursorIndexOutOfBoundsException exception){
-            Log.e("db", "No more to delete");
+            Log.e(TAG, "No more to delete");
             return -1;
         }
        // db.endTransaction();
@@ -154,12 +157,12 @@ public class MovementLogContentProvider extends ContentProvider {
 
         int updateCount = 0;
 
-        Log.d("db", "updating " + uri + where);
+        Log.d(TAG, "updating " + uri + where);
         updateCount = db.update(DbHelper.TABLENAME_MOVEMENT, contentValues, where, whereArgs);
         try{
             db.update(DbHelper.TABLENAME_MARKER, contentValues, where, whereArgs);
         }catch(SQLiteException e){
-            Log.e("db", "update error");
+            Log.e(TAG, "update error");
             e.printStackTrace();
         }
         // db.endTransaction();

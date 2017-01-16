@@ -18,13 +18,14 @@ import devicroft.burnboy.Services.LogService;
 public class NotificationCancelReceiver extends BroadcastReceiver {
 
     public static final String LOG_TAG = "NOTIF_CANCEL_RCVR";
+    public static final int NOTIFICATION_ID = 10;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(LOG_TAG, "onReceive");
         //when received, takes the intent with notification id and the cancels that notif
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(intent.getIntExtra("id", 0));
+        nm.cancel(NOTIFICATION_ID);
 
     }
 

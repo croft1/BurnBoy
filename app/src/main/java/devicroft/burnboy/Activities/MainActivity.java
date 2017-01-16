@@ -56,20 +56,33 @@ public class MainActivity extends AppCompatActivity {
 
     private Messenger messenger;
     LogService.LogBinder logBinder = null;
-    private boolean serviceRunning = false;
+    private static boolean  serviceRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //TODO uncomment initialiseAd();
         setupFAB();
+
         IntentFilter filter = new IntentFilter("devicroft.BurnBoy.CANCEL_NOTIFY");
         this.registerReceiver(new NotificationCancelReceiver(), filter);
+        if(getIntent().getAction() == Intent.ACTION_DELETE){
+            Intent intent=new Intent();
+            intent.setAction("devicroft.BurnBoy.CANCEL_NOTIFY");
+            intent.putExtra("id",NotificationCancelReceiver.NOTIFICATION_ID);
+            sendBroadcast(intent);
+        }
 
-
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (LogService.getName().equals(service.service.getClassName())) {
+                Log.d(LOG_TAG, " REBIND on SERVICE");
+                Toast.makeText(this,"Still logging movement", Toast.LENGTH_SHORT);
+                this.bindService(new Intent(this, LogService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+            }
+        }
     }
 
     //MIDDLE icon on fab list
@@ -215,6 +228,10 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(startLoggingFabClickListener);
         addButton.setOnClickListener(addLogFabClickListener);
         weightButton.setOnClickListener(weightLogFabClickListener);
+
+        if(serviceRunning){
+            startButton.setLabelText("Start tracking");
+        }
     }
 
     //TOP icon on fab list
@@ -224,8 +241,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "FAB CLICK addLogFab");
             //TODO add activity for manually inputting point locations, time, medium (bike, run etc)
             int count = getTableCount(MovementLogProviderContract.MOVEMENT_URI);
-            addLog(new MovementLog());
-            dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
+            dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)) + "Movement: " + count);
         }
     };
     //BOTTOM icon on fab list
@@ -241,20 +257,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void dispatchToast(int stringID){
         Log.d(LOG_TAG,"dispatchToast stringID");
         Toast.makeText(this, getString(stringID), Toast.LENGTH_SHORT).show();
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(serviceConnection!=null) {
-            unbindService(serviceConnection);
+            stopService();
             serviceConnection = null;
         }
     }

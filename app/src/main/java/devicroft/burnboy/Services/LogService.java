@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Binder;
@@ -19,9 +21,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import devicroft.burnboy.Activities.MainActivity;
+import devicroft.burnboy.Data.LogContentHelper;
+import devicroft.burnboy.Models.MovementLog;
+import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
 import devicroft.burnboy.Receivers.NotificationCancelReceiver;
 
@@ -33,9 +45,12 @@ public class LogService extends Service {
     private static final String TAG = "SERVICE";
     private LocationManager locationManager = null;
     private NotificationManager notificationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_INTERVAL = 200; //TODO change before sub
     private static final float LOCATION_DISTANCE = 10f;
-    private static final int NOTIFICATION_ID = 10;
+    private static final int LISTENER_NETWORK_INDEX = 0;
+    private static final int LISTENER_GPS_INDEX = 1;
+
+    private MovementLog currentMovementLog;
 
     @Nullable
     @Override
@@ -56,7 +71,8 @@ public class LogService extends Service {
         Log.d(TAG, "onCreate");
         initialiseLocationManager();    //sets location manager
         setupLocationManager();         //set up location listener and managers to request updates
-        initialiseNotification();
+        initialiseNotification();       //start notification display
+        currentMovementLog = new MovementLog(Calendar.getInstance().getTimeInMillis()); //create log object with start time
         super.onCreate();
     }
     @Override
@@ -67,7 +83,7 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy");
+        Log.e(TAG, " DESTROYED");
         if(locationManager != null){
             try {
                 locationManager.removeUpdates(locationListeners[0]);
@@ -78,17 +94,32 @@ public class LogService extends Service {
                 Log.i(TAG, "fail to remove location listners, ignore", e);
             }
         }
-        //to cancel notification
-        Intent intent=new Intent();
-        intent.setAction("devicroft.BurnBoy.CANCEL_NOTIFY");
-        intent.putExtra("id",NOTIFICATION_ID);
-        sendBroadcast(intent);
-        super.onDestroy();
+
+
+        //to save currentLog. markers aren't ordered - too annoying
+        Log.d(TAG, "saving log " + currentMovementLog.getFormattedStartDate() + " to DB");
+        currentMovementLog.setEndTime(new Date(Calendar.getInstance().getTimeInMillis()));
+        ArrayList<MovementMarker> allMarkers = locationListeners[LISTENER_GPS_INDEX].movementMarkers;
+        for (int i = 0; i < locationListeners[LISTENER_NETWORK_INDEX].movementMarkers.size(); i++) {
+            allMarkers.add(locationListeners[LISTENER_NETWORK_INDEX].movementMarkers.get(i));
+        }
+        currentMovementLog.setMarkers(allMarkers);
+        currentMovementLog.setSavedInDatabase(true);
+
+        new LogContentHelper(this).addLog(currentMovementLog);
+
+        //TODO remember to sort markers when querying in sql
+
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-            Log.d(TAG, "onUnbind");
+        Log.d(TAG, "onUnbind");
+        //to cancel notification
+        Intent i = new Intent();
+        intent.setAction("devicroft.BurnBoy.CANCEL_NOTIFY");
+        intent.putExtra("id", NotificationCancelReceiver.NOTIFICATION_ID);
+        sendBroadcast(intent);
         return super.onUnbind(intent);
     }
 
@@ -100,10 +131,11 @@ public class LogService extends Service {
 
     ///////////////////////////////////////////////////////     https://stackoverflow.com/questions/28535703/best-way-to-get-user-gps-location-in-background-in-android
     private class LocationListener implements android.location.LocationListener{
-        Location lastLocation;
-        public LocationListener(String provider){
+        public ArrayList<MovementMarker> movementMarkers = new ArrayList<>();       //each provider fills up their own list of markers
+        public LocationListener(String provider) {
             Log.i(TAG, "Constructor LocationListener " + provider);
-            lastLocation = new Location(provider);
+            Location l = new Location(provider);
+            //movementMarkers.add(locationToMarker(l));
         }
         @Override
         public void onProviderDisabled(String s) {
@@ -112,8 +144,9 @@ public class LogService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "onLocChanged");
-            lastLocation.set(location);
-            Log.d(TAG, "lastLoc =" + location.getLongitude() + " - " + location.getLatitude() + ", " + location.getProvider() + new Date(location.getTime()).toString());
+            MovementMarker m = locationToMarker(location);
+            Log.d(TAG, m.getTitle() + ", " + m.getLatlng().toString() + " - " + m.getTime() + " - " + m.getSnippet());
+            movementMarkers.add(m);
         }
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
@@ -122,6 +155,12 @@ public class LogService extends Service {
         @Override
         public void onProviderEnabled(String s) {
             Log.d(TAG, "onProviderEnabled");
+        }
+        private MovementMarker locationToMarker(Location l){
+            return new MovementMarker(fetchGeoName(l),
+                    String.valueOf(l.getTime()),
+                    new LatLng(l.getLatitude(),l.getLongitude()),
+                    "Speed: " + l.getSpeed());
         }
     }
     LocationListener[] locationListeners = new LocationListener[]{
@@ -197,7 +236,8 @@ public class LogService extends Service {
 
         //on delete/cancel noti function
         Intent bcIntent = new Intent (this, LogService.class);
-        bcIntent.putExtra("cancel", "cancel");//?
+        bcIntent.putExtra("id", "cancel");//?
+        bcIntent.setAction("devicroft.BurnBoy.CANCEL_NOTIFY");
         PendingIntent deleteIntent = PendingIntent.getActivity(this.getApplicationContext(),
                 0,
                 bcIntent,
@@ -206,10 +246,27 @@ public class LogService extends Service {
 
         //TODO notificationBuilder.addAction(viewProgressTrackingAction);
 
-        Log.d("NOTIFICATION", "" + NOTIFICATION_ID + " built");
-        notificationManager.notify( NOTIFICATION_ID , notificationBuilder.build());
+        Log.d("NOTIFICATION", "" + NotificationCancelReceiver.NOTIFICATION_ID + " built");
+        notificationManager.notify( NotificationCancelReceiver.NOTIFICATION_ID , notificationBuilder.build());
 
     }
+    //////////////////////////////////////////////////////////////////////////////////////////
+    private String fetchGeoName(Location l){
+        try {
+            String geoName = "";
+            Geocoder geo = new Geocoder(getBaseContext(), Locale.getDefault());
+            List<Address> addresses = geo.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+            if (addresses.size() > 0) {
+                geoName = "Near " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality();
+            }
+            return geoName;
+        }catch(IOException e){Log.e(TAG, "Couldnt get locale geo name from LatLng");}
+        catch(NullPointerException e){Log.e(TAG, "Can't get context , ignore");}
+        return "fail";
+    }
 
+    public static String getName(){
+        return "devicroft.BurnBoy.Services.LogService";
+    }
 
 }

@@ -60,13 +60,13 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         cursor.moveToFirst();
         for (int i = 0; i < cursor.getCount(); i++) {
             MovementLog m = new MovementLog(
+                    cursor.getInt(cursor.getColumnIndex(MovementLogProviderContract.MOV_ID)),
                     cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_START_TIME)),
                     cursor.getLong(cursor.getColumnIndex(MovementLogProviderContract.MOV_END_TIME))
             );
-            m.set_id(cursor.getInt(cursor.getColumnIndex(MovementLogProviderContract.MOV_ID)));
+            m.setMarkers(fetchMarkers(m.get_id()));
             logs.add(m);
-            logs.get(i).setMarkers(fetchMarkers(logs.get(i).get_id()));
-
+            cursor.moveToNext();
         }
 
         return logs;
@@ -90,17 +90,19 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         c.moveToFirst();
 
         for (int i = 0; i < c.getCount(); i++) {
-            MovementMarker m = new MovementMarker();
             String got = c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_LAT));
             Double lat = Double.parseDouble(got);
             got = c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_LNG));
             Double lng = Double.parseDouble(got);
-            m.setLatlng(new LatLng(lat, lng));
-            m.setSnippet(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_SNIPPET)));
-            m.setTitle(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TITLE)));
-            m.setTime(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TIME)));
+
+            MovementMarker m = new MovementMarker(c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TITLE)),
+                    c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_TIME)),
+                    new LatLng(lat, lng),
+                    c.getString(c.getColumnIndex(MovementLogProviderContract.MKR_SNIPPET))
+            );
             m.setId(c.getInt(c.getColumnIndex(MovementLogProviderContract.MKR_ID_MARKER)));
-            markers.add(new MovementMarker());
+            markers.add(m);
+            c.moveToNext();
         }
         return markers;
     }
@@ -183,9 +185,11 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_history_header, null);
         }
+
         TextView count = (TextView) view.findViewById(R.id.summary_number_label);
         TextView times = (TextView) view.findViewById(R.id.summary_startend_times_label);
-        times.setText(logs.get(i).getFormattedStartDate() + " -> " +  logs.get(i).getFormattedEndDate());
+        times.setText(logs.get(i).getFormattedStartDate() + "\n" +
+                logs.get(i).getFormattedStartTime() + " > " + logs.get(i).getFormattedEndDate());
         count.setText(String.valueOf(i + 1));
         view.setTag(R.string.row_delete_key, logs.get(i).get_id());  //set the view tag so we can retrieve the id later
         //view.setBackgroundColor(ContextCompat.getColor(context, R.color.));
@@ -210,7 +214,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.d(LOG_TAG, "Map button pressed");
                 context.startActivity(prepareIntentForDispatch(groupPosition));   //https://stackoverflow.com/questions/20235650/start-activity-when-custom-listview-button-clicked
                 Activity a = (Activity) context;    //https://stackoverflow.com/questions/30931866/overridependingtransition-not-work-in-adapterandroid
                 a.overridePendingTransition(0, 0);
