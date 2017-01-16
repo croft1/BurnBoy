@@ -189,7 +189,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         TextView count = (TextView) view.findViewById(R.id.summary_number_label);
         TextView times = (TextView) view.findViewById(R.id.summary_startend_times_label);
         times.setText(logs.get(i).getFormattedStartDate() + "\n" +
-                logs.get(i).getFormattedStartTime() + " > " + logs.get(i).getFormattedEndDate());
+                logs.get(i).getFormattedStartTime() + " > " + logs.get(i).getFormattedEndTime());
         count.setText(String.valueOf(i + 1));
         view.setTag(R.string.row_delete_key, logs.get(i).get_id());  //set the view tag so we can retrieve the id later
         //view.setBackgroundColor(ContextCompat.getColor(context, R.color.));

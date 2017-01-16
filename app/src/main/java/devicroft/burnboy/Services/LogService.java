@@ -58,7 +58,6 @@ public class LogService extends Service {
             Log.d(TAG, "onBind");
         return new LogBinder();
     }
-
     public class LogBinder extends Binder implements IInterface{
         @Override
         public IBinder asBinder() {
@@ -74,6 +73,7 @@ public class LogService extends Service {
         initialiseNotification();       //start notification display
         currentMovementLog = new MovementLog(Calendar.getInstance().getTimeInMillis()); //create log object with start time
         super.onCreate();
+
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

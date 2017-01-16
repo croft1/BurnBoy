@@ -43,6 +43,7 @@ import java.util.List;
 
 import devicroft.burnboy.Data.DbHelper;
 import devicroft.burnboy.Data.DbQueries;
+import devicroft.burnboy.Data.LogContentHelper;
 import devicroft.burnboy.Data.MovementLogProviderContract;
 import devicroft.burnboy.Models.MovementLog;
 import devicroft.burnboy.R;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MAIN LOG";
 
-    private Messenger messenger;
     LogService.LogBinder logBinder = null;
     private static boolean  serviceRunning = false;
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //TODO uncomment initialiseAd();
+        initialiseAd();
         setupFAB();
 
         IntentFilter filter = new IntentFilter("devicroft.BurnBoy.CANCEL_NOTIFY");
@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 this.bindService(new Intent(this, LogService.class), serviceConnection, Context.BIND_AUTO_CREATE);
             }
         }
+
+        TextView distance = (TextView) findViewById(R.id.distanceFocus);
     }
 
     //MIDDLE icon on fab list
@@ -125,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+/*
+
+ */
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
@@ -241,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "FAB CLICK addLogFab");
             //TODO add activity for manually inputting point locations, time, medium (bike, run etc)
             int count = getTableCount(MovementLogProviderContract.MOVEMENT_URI);
-            dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)) + "Movement: " + count);
+            dispatchToast("Coming soon ");
         }
     };
     //BOTTOM icon on fab list
@@ -250,8 +255,9 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             Log.d(LOG_TAG,"FAB CLICK weightLogFab");
             //TODO initialise weight logging intent to activity
-            int id = getIdOfLastInserted();
-            deleteLog(id);
+            int id = new LogContentHelper(getBaseContext()).getIdOfLastInserted();
+            new LogContentHelper(getBaseContext()).deleteLog(id);
+            dispatchToast("Coming soon " );
 
             //dispatchToast("implement weight log activity, with graph");
         }
@@ -300,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onShown(Snackbar snackbar) {
-                deleteAllLogs();
+                new LogContentHelper(getBaseContext()).deleteAllLogs();
             }
         });
         snackbar.show();
@@ -338,28 +344,7 @@ public class MainActivity extends AppCompatActivity {
     *       CONTENT PROVIDER METHODS METHOODSSS
      */
 
-    private void addLog(MovementLog log){
-        Log.d(LOG_TAG,"addLog" + log.getFormattedStartDate());
-        //setup inserting putting in movement values
-        ContentResolver cr = this.getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(MovementLogProviderContract.MOV_START_TIME, log.getStartTime().getTime());
-        values.put(MovementLogProviderContract.MOV_END_TIME, log.getEndTime().getTime());
-        Log.d("cr", log.getStartTime().getTime() + " log added");
-        cr.insert(MovementLogProviderContract.MOVEMENT_URI, values);
-        //setup and insert marker values - use same object but clear firrst
-        values.clear();
 
-        for (int i = 0; i < log.getMarkers().size(); i++) {
-            values.put(MovementLogProviderContract.MKR_TITLE, log.getMarkers().get(i).getTitle());
-            values.put(MovementLogProviderContract.MKR_LAT, log.getMarkers().get(i).getLatlng().latitude);
-            values.put(MovementLogProviderContract.MKR_LNG, log.getMarkers().get(i).getLatlng().longitude);
-            values.put(MovementLogProviderContract.MKR_SNIPPET, log.getMarkers().get(i).getSnippet());
-            values.put(MovementLogProviderContract.MKR_TIME, log.getMarkers().get(i).getTime());
-            values.put(MovementLogProviderContract.MKR_FK_MOVEMENT_ID, getIdOfLastInserted());
-            cr.insert(MovementLogProviderContract.MARKER_URI, values);
-        }
-   }
     private String getCountSummaryString(){
         //query count on movement table to get a [count] array that has an int, instead of returning all values and couting them. faster
         Cursor c = getContentResolver().query(MovementLogProviderContract.MOVEMENT_URI, new String[] {DbQueries.GET_TABLE_COUNT_AS_CURSORINT}, null, null, null);
@@ -412,28 +397,7 @@ public class MainActivity extends AppCompatActivity {
             we fetch a content resolver, define the table uri, and since were deleting all, no arguments are needed
             log and show user we did something in the background via toast
      */
-    private void deleteAllLogs(){
-        Log.d(LOG_TAG,"deleteAllLogs");
-        getContentResolver().delete(
-                MovementLogProviderContract.ALL_URI,       //deletes all rows in all tables
-                null,   //selection clause
-                null    //selection args (after WHERE ...)
-        );
 
-        /*      if other tables (other than movement and marker) are added, uncomment.
-
-        getContentResolver().delete(
-                MovementLogProviderContract.MOVEMENT_URI,       //just calling delete on movement deletes all, using CASCADE
-                null,   //selection clause
-                null    //selection args (after WHERE ...)
-        );
-        //probably only need this whilst testing, cascade should always work - though in dev orphan markers may be made
-        getContentResolver().delete(MovementLogProviderContract.MARKER_URI,null,null);    //uri, selection clause, selection args (after WHERE ...)
-        */
-
-        Log.d("cr", "All logs deleted from db");
-        //TODO weird thing where i have 5 markers always there unable to delete
-    }
     private void dispatchMkrMovCountsToast(){
         dispatchToast("Marker count: " + Integer.toString(getTableCount(MovementLogProviderContract.MARKER_URI)));
     }

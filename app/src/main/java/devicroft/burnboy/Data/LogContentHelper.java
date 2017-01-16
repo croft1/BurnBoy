@@ -43,6 +43,8 @@ public class LogContentHelper {
         this.context = context;
     }
 
+
+
     public void addLog(MovementLog log){
         Log.d(LOG_TAG,"addLog" + log.getFormattedStartDate());
         //setup inserting putting in movement values
@@ -65,7 +67,7 @@ public class LogContentHelper {
             cr.insert(MovementLogProviderContract.MARKER_URI, values);
         }
     }
-    private int getIdOfLastInserted(){
+    public int getIdOfLastInserted(){
         Log.d(LOG_TAG,"getIdOfLastInserted");
         Cursor c = context.getContentResolver().query(
                 MovementLogProviderContract.MOVEMENT_URI,  //content uri of table
@@ -98,22 +100,19 @@ public class LogContentHelper {
      */
     public void deleteAllLogs(){
         Log.d(LOG_TAG,"deleteAllLogs");
+        /*
         context.getContentResolver().delete(
-                MovementLogProviderContract.ALL_URI,       //deletes all rows in all tables
+                MovementLogProviderContract.ALL_URI,       //deletes all rows in all tables, including oter i may make
                 null,   //selection clause
                 null    //selection args (after WHERE ...)
         );
+*/
 
-        /*      if other tables (other than movement and marker) are added, uncomment.
-
-        getContentResolver().delete(
+        context.getContentResolver().delete(
                 MovementLogProviderContract.MOVEMENT_URI,       //just calling delete on movement deletes all, using CASCADE
                 null,   //selection clause
                 null    //selection args (after WHERE ...)
         );
-        //probably only need this whilst testing, cascade should always work - though in dev orphan markers may be made
-        getContentResolver().delete(MovementLogProviderContract.MARKER_URI,null,null);    //uri, selection clause, selection args (after WHERE ...)
-        */
 
         Log.d("cr", "All logs deleted from db");
     }
