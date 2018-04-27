@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import devicroft.burnboy.Data.DbHelper;
+import devicroft.burnboy.Data.LogContentHelper;
 import devicroft.burnboy.Data.MovementLogProviderContract;
+import devicroft.burnboy.Models.MovementMarker;
 import devicroft.burnboy.R;
-import devicroft.burnboy.Services.MovementTrackingService;
+import devicroft.burnboy.Services.LogService;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String LOG_TAG = "MAPS LOG";
@@ -39,18 +41,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         try{
-            if(getIntent().getAction().equals(MovementTrackingService.REQUEST_INTENT_STOP)){
-                Log.d(LOG_TAG, "stopping service from notification action press");
-                stopService(new Intent(this, MovementTrackingService.class));
-            }
+            //TODO for tracking progress function from notification
         }catch(NullPointerException e){
             Log.i(LOG_TAG, "activity not started from notification progress button, ignore");
         }catch(RuntimeException e){
             Log.i(LOG_TAG, "activity not started from notification progress button, ignore");
         }
-
-
-
     }
 
 
@@ -67,7 +63,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }else if(source.equals("browse")){
             setupLogStartPointMap();
-            testSetupMap();
         }else if(source.equals("trackingService")){
             setupViewProgressMap();
         }
@@ -102,34 +97,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setupLogStartPointMap() {
         Log.d(LOG_TAG,"setupStartPOintMap");
-        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_simple));
-        ArrayList<LatLng> startPoints = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_date));
+        LogContentHelper helper = new LogContentHelper(this);
+        ArrayList<MovementMarker> startPoints = helper.getFirstMarkerForEachLog();
 
-        //TODO build query to find the marker with the earliest time for each foreign key (MovementLog)
-        //table, null null null null will return every marker we have
-        Cursor c = getContentResolver().query(MovementLogProviderContract.MARKER_URI,
-                null,
-                null,
-                null,
-                null);
+        for (int i = 0; i < startPoints.size() ; i++) {
 
-        c.moveToFirst();
-        for (int i = 0; i < c.getCount() ; i++) {
-
-            Date start = new Date(getIntent().getLongExtra("start", 0));
-            String title = String.valueOf(dateFormat.format(start)) + " log";
-            LatLng newPosition =  new LatLng(c.getDouble(c.getColumnIndex(DbHelper.COL_LAT)), c.getDouble(c.getColumnIndex(DbHelper.COL_LNG)));
-            startPoints.add(newPosition);
             mMap.addMarker(new MarkerOptions()
-                    .position(startPoints.get(i))
-                    .title(title));
+                    .position(startPoints.get(i).getLatlng())
+                    .title(startPoints.get(i).getTitle() + startPoints.get(i).getTime()))
+                    .setSnippet(startPoints.get(i).getSnippet());
 
             //TODO update colour of marker depending on how long ago it was
 
         }
         if(startPoints.size() > 0){
         //animate camera towards the starting location
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startPoints.get(0), 16));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startPoints.get(0).getLatlng(), 16));
         }else{
             //when there aren't any logs created, show notification.
             Toast.makeText(this, getString(R.string.toast_map_empty), Toast.LENGTH_SHORT).show();
@@ -160,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setupIndividualLogMap() {
         Log.d(LOG_TAG,"setupIndivLogMap");
         //TODO fix npe, geos is empty
-        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_simple));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_display_hms));
         ArrayList<LatLng> geos = getIntent().getParcelableArrayListExtra("markers");
         Date start = new Date(getIntent().getLongExtra("start", 0));
         Date end = new Date(getIntent().getLongExtra("end", 0));

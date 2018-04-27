@@ -37,9 +37,8 @@
     <!-- END  PERMISSION STRINGS -->
 
     <!-- DATE FORMAT STRINGS -->
-    <string name="date_display_long">HH:mm:ss aaa - EEE, d MMM, yyyy</string>
-    <string name="date_display_HMS">HH:mm:ss aaa - EEE, d MMM, yyyy</string>
-    <string name="date_display_simple">HH:mm:ss - EEE, d MMM, yy</string>
+    <string name="date_display_hms">HH:mm:ss aaa</string>
+    <string name="date_display_date">HH:mm:ss - EEE, d MMM, yy</string>
     <!-- END DATE FORMAT STRINGS -->
 
     <!-- LICENSE STRINGS -->

@@ -4,7 +4,7 @@
     <!--
     https://stackoverflow.com/questions/8697434/in-android-how-to-make-a-image-grow-from-one-point-using-animation
 
-    scales from 0 to full size in 1000ms
+    scales from 0 to full size in x ms
 
     -->
     <scale
@@ -16,6 +16,6 @@
     android:pivotX="50%"
     android:pivotY="50%"
     android:fillAfter="false"
-    android:duration="600" />
+    android:duration="200" />
 
 </set>

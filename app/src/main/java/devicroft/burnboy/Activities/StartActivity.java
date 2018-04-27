@@ -23,7 +23,7 @@ import devicroft.burnboy.R;
 public class StartActivity extends AppCompatActivity {
 
 
-    private static final int SPLASH_DISPLAY_LENGTH = 800;
+    private static final int SPLASH_DISPLAY_LENGTH = 1000;   //TODO update on release
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +31,12 @@ public class StartActivity extends AppCompatActivity {
         setContentView(devicroft.burnboy.R.layout.activity_start_splash);
         final View logoSplash = findViewById(R.id.logo_splash);
         final Animation anim = AnimationUtils.loadAnimation(this, R.anim.scale);
+
+        final Intent i = new Intent(StartActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
+        overridePendingTransition(0,0);
+        /*
 
         //to trigger events when splash animation is finished. start next activity
         anim.setAnimationListener(new Animation.AnimationListener() {
@@ -58,6 +64,7 @@ public class StartActivity extends AppCompatActivity {
         });
         logoSplash.startAnimation(anim);
 
+        */
 
     }
 

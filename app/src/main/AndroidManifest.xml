@@ -44,37 +44,9 @@
             android:authorities="devicroft.burnboy.Data.MovementLogContentProvider"
             android:exported="true"
             android:multiprocess="true" />
+        <service android:name=".Services.LogService"/>
+        <receiver android:name=".Receivers.NotificationCancelReceiver"/>
 
-        <service android:description="@string/service_movement_tracking_description"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@drawable/icon_run"
-            android:label="@string/service_movement_tracking_label"
-            android:name=".Services.MovementTrackingService"
-            >
-         </service>
-
-        <service android:description="@string/service_movement_tracking_description"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@drawable/icon_run"
-            android:label="@string/service_movement_tracking_label"
-            android:name=".Services.LogService"
-            >
-        </service>
-
-        <receiver
-            android:name=".Receivers.ActivityTrackingBroadcastReceiver" >
-            <intent-filter android:priority="4" >
-                <action android:name=".Receivers.ActivityTrackingBroadcastReceiver" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".Receivers.NotificationCancelReceiver" >
-            <intent-filter android:priority="999" >
-                <action android:name=".Receivers.NotificationCancelReceiver" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

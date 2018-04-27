@@ -10,4 +10,6 @@ public class DbQueries {
     public static final String GET_TABLE_COUNT_AS_CURSORINT = "count(*) AS count";
     public static final String ID_EQUALS_PLACEHOLDER = "id = ?";
     public static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys = ON;";
+
+    //TODO make better use of this class
 }

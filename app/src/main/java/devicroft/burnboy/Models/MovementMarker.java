@@ -39,6 +39,7 @@ public class MovementMarker {
         this.snippet = snippet;
     }
 
+    /*
     public MovementMarker() {
         this.title = "test";
         this.time = Calendar.getInstance().getTime().toString();
@@ -53,7 +54,7 @@ public class MovementMarker {
         this.latlng = new LatLng(-34, i);
         this.snippet = "test";
     }
-
+    */
     public MarkerOptions getAsMarkerOptions(){
         return new MarkerOptions()
                 .position(latlng)
@@ -81,6 +82,16 @@ public class MovementMarker {
     public String getTime() {
         return time;
     }
+    public long getLongTime() {
+        try{
+            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            Date date = format.parse(getTime());
+            return date.getTime();
+        }catch(ParseException e ){
+            Log.e(LOG_TAG, "couldnt parse dateTime from string");
+        }
+        return 0;
+    }
 
     public void setTime(String time) {
         this.time = time;
@@ -105,12 +116,11 @@ public class MovementMarker {
     public double getTotalTime(){
         double sumTime = 0;
         try{
-
-            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss zZ yyyy", Locale.ENGLISH);
             Date date = format.parse(getTime());
             sumTime += date.getTime();
         }catch(ParseException e ){
-            Log.e(LOG_TAG, "couldnt parse date from string");
+            Log.e(LOG_TAG, "couldnt parse date from string" + e.getMessage());
         }
         return sumTime;
     }

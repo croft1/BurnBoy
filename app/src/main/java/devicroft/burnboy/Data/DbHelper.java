@@ -23,6 +23,7 @@ import devicroft.burnboy.Models.MovementMarker;
 public class DbHelper extends SQLiteOpenHelper {
 
     //to avoid confusion with actual android activities, MOVEMENT is used instead
+    public static final String LOG_TAG = "DB_HELPER";
 
     public static final String DATABASE_NAME = "burnBoyDb";
     public static final int dbVersionNumber = 1;
@@ -81,7 +82,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public DbHelper(Context context){
         super(context, DATABASE_NAME, null, dbVersionNumber);
-        Log.d("db",  "db created");
+        Log.d(LOG_TAG,  "db created");
     }
 
     public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -112,6 +113,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     private void insertMarkers(SQLiteDatabase db, ArrayList<MovementMarker> m){
+        Log.d(LOG_TAG,"insertMarkers");
         for(int i = 0; i < m.size(); i++){
             ContentValues values = new ContentValues();
             values.put(COL_TITLE, m.get(i).getTitle());
@@ -144,6 +146,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     private String[] cursorToMarkerData(Cursor cursor){
+        Log.d(LOG_TAG, "cursorToMarkerData");
         MarkerOptions m = new MarkerOptions().visible(false);
         String[] s = {cursor.getString(titleIndex),
                     cursor.getString(snippetIndex),
@@ -156,6 +159,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public int getLogCount(){
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery(QUERY_SELECT_ALL_LOGS, null);
         int count = c.getCount();
@@ -190,23 +194,23 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(PRAGMA_FOREIGNKEYS_ON);
         db.execSQL(CREATE_MOVEMENT_LOG_TABLE);
-        Log.d("db", "movement table created");
+        Log.d(LOG_TAG, "movement table created");
         db.execSQL(CREATE_MARKER_TABLE);
-        Log.d("db", "latlng table created");
+        Log.d(LOG_TAG, "latlng table created");
 
     }
 
 
     @Override
     public void onOpen(SQLiteDatabase db) {
-        Log.d("db", "opened");
+        Log.d(LOG_TAG, "opened");
         super.onOpen(db);
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("db", "TABLE UPGRADED");
+        Log.d(LOG_TAG, "TABLE UPGRADED");
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_MARKER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLENAME_MOVEMENT);
@@ -220,18 +224,19 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void setWriteAheadLoggingEnabled(boolean enabled) {
+        Log.d(LOG_TAG, "setWriteAheadLoggingEnabled");
         super.setWriteAheadLoggingEnabled(enabled);
     }
 
     @Override
     public SQLiteDatabase getWritableDatabase() {
-        Log.d("db", "got writable");
+        Log.d(LOG_TAG, "got writable");
         return super.getWritableDatabase();
     }
 
     @Override
     public SQLiteDatabase getReadableDatabase() {
-        Log.d("db", "got readable");
+        Log.d(LOG_TAG, "got readable");
         return super.getReadableDatabase();
     }
 
@@ -242,11 +247,13 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "onConfigure");
         super.onConfigure(db);
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(LOG_TAG, "onDowngrade");
         super.onDowngrade(db, oldVersion, newVersion);
     }
 

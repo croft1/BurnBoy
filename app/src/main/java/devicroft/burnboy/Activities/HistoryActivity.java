@@ -73,8 +73,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     }
 
-
-
     @Override
     public void onBackPressed() {
         Log.d(LOG_TAG,"onBackPressed");
